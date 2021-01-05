@@ -1,0 +1,7 @@
+name: Cities
+version: ${project.version}
+main: com.ewoudje.cities.Cities
+api-version: 1.16
+authors: [ ewoudje ]
+description: Cool plugin
+depend: [NBTAPI, ProtocolLib]
