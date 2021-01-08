@@ -1,4 +1,4 @@
-package com.ewoudje.cities.commands;
+package com.ewoudje.cities.user.commands;
 
 import com.ewoudje.cities.Cities;
 import com.ewoudje.cities.CityPlayer;

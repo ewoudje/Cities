@@ -1,16 +1,17 @@
 package com.ewoudje.cities;
 
 import com.ewoudje.cities.block.Blocks;
-import com.ewoudje.cities.commands.CitiesCommands;
-import com.ewoudje.cities.commands.CityPlayerProvider;
-import com.ewoudje.cities.commands.CityPlayerSenderProvider;
-import com.ewoudje.cities.commands.CityProvider;
+import com.ewoudje.cities.user.commands.CitiesCommands;
+import com.ewoudje.cities.user.commands.CityPlayerProvider;
+import com.ewoudje.cities.user.commands.CityPlayerSenderProvider;
+import com.ewoudje.cities.user.commands.CityProvider;
 import com.ewoudje.cities.item.ItemType;
 import com.ewoudje.cities.item.Items;
 import com.ewoudje.cities.item.RecipesHandler;
 import com.ewoudje.cities.listeners.CityBlockListener;
 import com.ewoudje.cities.listeners.CityItemListener;
 import com.ewoudje.cities.listeners.CityPlayerListener;
+import com.ewoudje.cities.mode.ModeHandler;
 import com.google.gson.Gson;
 import com.jonahseguin.drink.CommandService;
 import com.jonahseguin.drink.Drink;
@@ -32,6 +33,7 @@ public final class Cities extends JavaPlugin {
     private LanguageManager languageManager;
     private Gson gson;
     private RecipesHandler recipesHandler;
+    private ModeHandler modeHandler;
 
     private HashMap<World, CityWorld> worlds = new HashMap<>();
     private HashMap<Player, CityPlayer> players = new HashMap<>();
@@ -62,6 +64,7 @@ public final class Cities extends JavaPlugin {
         Blocks.register(new HashMap<>());
         Items.register(items);
         recipesHandler = new RecipesHandler(this);
+        modeHandler = new ModeHandler(this);
 
         getServer().getPluginManager().registerEvents(new CityPlayerListener(this, players), this);
         getServer().getPluginManager().registerEvents(new CityItemListener(this), this);
@@ -77,6 +80,7 @@ public final class Cities extends JavaPlugin {
     public void onDisable() {
         // Plugin shutdown logic
         recipesHandler.removeRecipes();
+        modeHandler.disable();
         save();
     }
 
@@ -118,4 +122,7 @@ public final class Cities extends JavaPlugin {
     }
 
 
+    public ModeHandler getModeHandler() {
+        return modeHandler;
+    }
 }

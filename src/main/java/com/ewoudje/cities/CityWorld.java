@@ -96,6 +96,8 @@ public class CityWorld {
             e.printStackTrace();
             plugin.getLogger().severe("World " + world.getName() + " cities.dat could not be saved!!!");
         }
+
+
     }
 
     public void createCity(String name, CityPlayer player, CityBlock foundingBlock) {
@@ -153,5 +155,9 @@ public class CityWorld {
         block.getBlock().setType(Material.AIR);
         this.blocksViaPos.remove(new BlockPosition(block.getBlock()));
         this.blocksViaUUID.remove(block.getId());
+    }
+
+    public World getWorld() {
+        return world;
     }
 }

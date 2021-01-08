@@ -3,6 +3,7 @@ invalid-city: "[red] City [b]%0%[/b] does not exist."
 have-no-city: "[red]You are not in a city..."
 invalid-item: "[red]Select the right item for this command."
 invalid-player: "[red]This player doesn't exist"
+not-implemented: "[red]This is yet to be implemented!"
 
 entered-city: "[green] Welcome to [gold][b]%1%[/b][reset]!"
 left-city: "[red] You left city [gold][b]%1%[/b][red]!"
@@ -51,7 +52,13 @@ player-left: "[red]%0% left our city, KILL HIM IN HIS SLEEP!"
 
 leave-city: "You left city [gold][b]'%0%'[reset]!"
 
-
-
 #Blocks
 founding-block: "[gold]Founding Lectern"
+
+#Icons
+icon-road: "[gold]Road mode"
+icon-claim: "[gold]Claim mode"
+icon-2point: "[gold]2 Point Selection"
+icon-show-claim: "[green]Show claim"
+icon-depth-off: "[green]Toggle depth On"
+icon-depth-on: "[red]Toggle depth Off"

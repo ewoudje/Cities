@@ -27,8 +27,12 @@ public class Items {
         };
 
         //REGISTER
-
+        r.accept(new ItemNone());
         //END REGISTER
+
+        //ICONS
+        for (ItemIcon icon : ItemIcon.values())
+            r.accept(icon);
 
         for (BlockType type : Blocks.getTypes()) {
             if (type instanceof ItemType)
@@ -56,13 +60,20 @@ public class Items {
 
     public static CityItem createItem(CityWorld world, Class<? extends ItemType> type, int amount) {
         ItemType t = itemsByClass.get(type);
+        return createItem(world, t);
+    }
+
+    public static CityItem createItem(CityWorld world, ItemType t) {
+        return createItem(world, t, 1);
+    }
+
+    public static CityItem createItem(CityWorld world, ItemType t, int amount) {
         if (t == null) return null;
 
         CityItem item = new CityItem(new ItemStack(t.getMaterial(), amount), t);
         item.getNBT().setString("type", t.getName());
 
         t.create(world, item);
-
         return item;
     }
 }

@@ -85,6 +85,9 @@ public class CityPlayerListener implements Listener {
     }
 
     private Optional<City> inCity(CityWorld world, Location loc) {
+        if (!world.getWorld().equals(loc.getWorld()))
+            return Optional.empty();
+
         Location l = loc.clone();
         l.setY(0);
         return world.getCities().stream()

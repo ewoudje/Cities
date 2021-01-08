@@ -1,4 +1,4 @@
-package com.ewoudje.cities.commands;
+package com.ewoudje.cities.user.commands;
 
 import com.jonahseguin.drink.annotation.Classifier;
 

@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public class BlockPosition {
 
-    private final int x, y, z;
+    protected int x, y, z;
 
     public BlockPosition(int x, int y, int z) {
         this.x = x;

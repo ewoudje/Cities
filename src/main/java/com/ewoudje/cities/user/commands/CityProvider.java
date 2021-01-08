@@ -1,10 +1,8 @@
-package com.ewoudje.cities.commands;
+package com.ewoudje.cities.user.commands;
 
 import com.ewoudje.cities.Cities;
-import com.ewoudje.cities.CityPlayer;
 import com.ewoudje.cities.city.City;
 import com.jonahseguin.drink.CommandService;
-import com.jonahseguin.drink.annotation.Sender;
 import com.jonahseguin.drink.argument.CommandArg;
 import com.jonahseguin.drink.exception.CommandExitMessage;
 import com.jonahseguin.drink.parametric.DrinkProvider;
