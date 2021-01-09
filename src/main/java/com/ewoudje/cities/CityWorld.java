@@ -115,7 +115,7 @@ public class CityWorld {
                     Optional<Marker> marker = set.getMarker(c.getName());
                     if (!marker.isPresent()) {
                         Location loc = c.getFoundingBlock().getBlock().getLocation();
-                        set.createPOIMarker(c.getName(), map, loc.getX(), loc.getY(), loc.getZ());
+                        set.createPOIMarker(c.getName(), map, loc.getX() + 0.5, loc.getY() + 0.5, loc.getZ() + 0.5);
                         //TODO claim shape?
                     }
                 }
