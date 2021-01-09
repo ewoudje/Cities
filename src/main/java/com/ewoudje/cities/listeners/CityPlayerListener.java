@@ -16,6 +16,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.Map;
@@ -61,6 +62,11 @@ public class CityPlayerListener implements Listener {
             player.actionBar(Message.fromKey("entered-city")
                     .replacements(player.getPlayer().getName(), player.getVisitCity().getName()));
 
+    }
+
+    @EventHandler
+    public void onPortal(PlayerPortalEvent e) {
+        plugin.getPlayer(e.getPlayer()).setWorld(plugin.getWorld(e.getTo().getWorld()));
     }
 
 
