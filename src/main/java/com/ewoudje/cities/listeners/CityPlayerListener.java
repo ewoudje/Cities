@@ -14,10 +14,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerPortalEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 
 import java.util.Map;
 import java.util.Optional;
@@ -65,8 +62,8 @@ public class CityPlayerListener implements Listener {
     }
 
     @EventHandler
-    public void onPortal(PlayerPortalEvent e) {
-        plugin.getPlayer(e.getPlayer()).setWorld(plugin.getWorld(e.getTo().getWorld()));
+    public void onWorldSwitch(PlayerChangedWorldEvent e) {
+        plugin.getPlayer(e.getPlayer()).setWorld(plugin.getWorld(e.getPlayer().getWorld()));
     }
 
 
