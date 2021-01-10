@@ -19,8 +19,10 @@ version: "Version: [b]%0%[/b]"
 
 when-placed-create-town: "When you place this [green][b]block[/b][reset], the town will be created!"
 create-town: "You created the town [green][b]%0%[/b][reset]!!"
+town-exists: "[red]%0% already exists!"
 too-close-town: "[red]You are to close to another town!"
 founding-not-ready: "[red]This block is yet to be configured! Use /ct create <name>"
+owner-changed: "[green]Owner for %0% changed to %1%!"
 
 broadcast-create-town:
   - "[yellow]%0%[reset] has created the town "

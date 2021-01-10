@@ -1,5 +1,6 @@
 package com.ewoudje.townskings.user.commands;
 
+import com.ewoudje.townskings.NonePlayer;
 import com.ewoudje.townskings.api.wrappers.TKPlayer;
 import com.ewoudje.townskings.api.TKPlugin;
 import com.ewoudje.townskings.town.Town;
@@ -35,6 +36,11 @@ public class TKCommands {
     public void create(@Sender TKPlayer player, @Text String name) {
         if (player.getTown() != null) {
             player.send(Message.fromKey("already-in-town").replacements(player.getTown().getName()));
+            return;
+        }
+
+        if (player.getWorld().getTown(name) != null) {
+            player.send(Message.fromKey("town-exists").replacements(name));
             return;
         }
 
@@ -134,10 +140,10 @@ public class TKCommands {
     @Command(name = "owner", aliases = {}, desc = "Set owner of town", usage = "")
     @Require("tk.admin.owner")
     public void owner(@Sender TKPlayer player, @Noneable TKPlayer owner, Town town) {
-        town.setOwner(owner == null ? null : owner.getOfflinePlayer());
+        town.setOwner(owner == null ? new NonePlayer() : owner.getOfflinePlayer());
 
         player.send(Message.fromKey("owner-changed")
-                .replacements(town.getName(), owner == null ? "null" : owner.getPlayer().getName()));
+                .replacements(town.getName(), owner == null ? "None" : owner.getPlayer().getName()));
     }
 
 }
