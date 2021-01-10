@@ -74,7 +74,9 @@ public class RecipesHandler {
                         plugin.getClass().getResource("/recipes").toURI(),
                         Collections.emptyMap());
 
-                Files.walk(fs.getPath("/recipes")).forEach((p) -> {
+                Files.walk(fs.getPath("/recipes/")).forEach((p) -> {
+                    if (p.getFileName().toString().equals("recipes")) return;
+
                     try {
                         Files.copy(p, new File(folder, p.getFileName().toString()).toPath());
                     } catch (IOException e) {
