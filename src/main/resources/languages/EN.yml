@@ -1,5 +1,5 @@
 no-permission: "[red]You don't have the [b]permissions[/b] to do this!!"
-invalid-town: "[red] Town [b]%0%[/b] does not exist."
+invalid-town: "[red]Town [b]%0%[/b] does not exist."
 have-no-town: "[red]You are not in a town..."
 invalid-item: "[red]Select the right item for this command."
 invalid-player: "[red]This player doesn't exist"
