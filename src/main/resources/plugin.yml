@@ -1,4 +1,4 @@
-name: "Towns&Kings"
+name: Towns-Kings
 version: ${project.version}
 main: com.ewoudje.townskings.api.TKPlugin
 api-version: 1.16
