@@ -12,7 +12,7 @@ already-in-town:
   - "[red]You are already in the town "
   - "[gold][b]'%0%'"
   - " hover: [red]Leave %0%"
-  - " command: /ct leave"
+  - " command: /tk leave"
   - "[red]!"
 
 version: "Version: [b]%0%[/b]"
@@ -28,7 +28,7 @@ broadcast-create-town:
   - "[yellow]%0%[reset] has created the town "
   - "[bold][green]%1%"
   - " hover: [gold]Join %1%"
-  - " command: /ct join %1%"
+  - " command: /tk join %1%"
 
 broadcast-town-disband:
   - "[gold]%0%[red] has been disbanded!!"
@@ -37,17 +37,17 @@ list-towns-start: "All the towns in this world:[break]"
 list-towns-entry:
   - "[green] - [reset] %0% [break]"
   - "hover: [gold]Join %0%"
-  - "command: /ct join %0%"
+  - "command: /tk join %0%"
 
 join-town: "You joined town [gold][b]'%0%'[reset]!"
 wants-join:
   - "[green]%0% wants to join your town!"
   - "hover: Invite %0%"
-  - "command: /ct invite %0%"
+  - "command: /tk invite %0%"
 town-invite:
   - "[green]%0%[reset] invited you to the town [gold][b]%1%[/b][reset]!"
   - "hover: Join %1%"
-  - "command: /ct join %1%"
+  - "command: /tk join %1%"
 need-invite: "[red]You need an invite!"
 invite-success: "[green]You invited %0% to your town!"
 player-joined: "[green]%0% joined our town, Say hello to him!"
