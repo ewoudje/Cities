@@ -45,7 +45,7 @@ public class Items {
     public static TKItem createItem(TKWorld world, NamespacedKey key, int amount) {
         if (key.getNamespace().equals("minecraft")) {
             return new TKItem(new ItemStack(Material.getMaterial(key.getKey().toUpperCase(Locale.ROOT)), amount), null);
-        } else if (key.getNamespace().equals("towns")) {
+        } else if (key.getNamespace().equals("tk")) {
             ItemType type = itemsByName.get(key.getKey());
             TKItem item = new TKItem(new ItemStack(type.getMaterial(), amount), type);
             item.getNBT().setString("type", type.getName());
