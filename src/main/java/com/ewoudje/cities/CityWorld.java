@@ -5,11 +5,19 @@ import com.ewoudje.cities.block.BlockType;
 import com.ewoudje.cities.block.Blocks;
 import com.ewoudje.cities.block.FoundingBlock;
 import com.ewoudje.cities.city.City;
+import de.bluecolored.bluemap.api.BlueMapAPI;
+import de.bluecolored.bluemap.api.BlueMapMap;
+import de.bluecolored.bluemap.api.BlueMapWorld;
+import de.bluecolored.bluemap.api.marker.Marker;
+import de.bluecolored.bluemap.api.marker.MarkerAPI;
+import de.bluecolored.bluemap.api.marker.MarkerSet;
+import de.bluecolored.bluemap.api.marker.Shape;
 import de.tr7zw.nbtapi.NBTCompound;
 import de.tr7zw.nbtapi.NBTCompoundList;
 import de.tr7zw.nbtapi.NBTFile;
 import de.tr7zw.nbtapi.NBTListCompound;
 import me.wiefferink.interactivemessenger.processing.Message;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -97,7 +105,29 @@ public class CityWorld {
             plugin.getLogger().severe("World " + world.getName() + " cities.dat could not be saved!!!");
         }
 
+        BlueMapAPI.getInstance().ifPresent(api -> {
+            BlueMapWorld mw = api.getWorld(world.getUID()).orElseThrow(() -> new NullPointerException("No map for world: " + world.getName()));
+            BlueMapMap map = mw.getMaps().stream().filter((m) -> m.getId().equals("world")).findAny().orElse(null);
+            try {
+                MarkerAPI m = api.getMarkerAPI();
+                MarkerSet set = m.getMarkerSet("Cities")
+                        .orElseGet(() -> m.createMarkerSet("Cities"));
 
+                for (City c : cities) {
+                    Optional<Marker> marker = set.getMarker(c.getName());
+                    if (!marker.isPresent()) {
+                        Location loc = c.getFoundingBlock().getBlock().getLocation();
+                        set.createPOIMarker(c.getName(), map, loc.getX() + 0.5, loc.getY() + 0.5, loc.getZ() + 0.5);
+                        //TODO claim shape?
+                    }
+                }
+
+                m.save();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public void createCity(String name, CityPlayer player, CityBlock foundingBlock) {

@@ -19,6 +19,7 @@ version: "Version: [b]%0%[/b]"
 
 when-placed-create-city: "When you place this [green][b]block[/b][reset], the city will be created!"
 create-city: "You created the city [green][b]%0%[/b][reset]!!"
+too-close-city: "[red]You are to close to another city!"
 founding-not-ready: "[red]This block is yet to be configured! Use /ct create <name>"
 
 broadcast-create-city:

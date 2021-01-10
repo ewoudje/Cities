@@ -1,5 +1,6 @@
 package com.ewoudje.cities.block;
 
+import com.ewoudje.cities.Cities;
 import com.ewoudje.cities.CityBlock;
 import com.ewoudje.cities.CityWorld;
 import org.bukkit.block.Block;
@@ -15,7 +16,7 @@ public class Blocks {
     private static Map<Class<? extends BlockType>, BlockType> blocksByClass = new HashMap<>();
     private static HashMap<String, BlockType> blocksByName = new HashMap<>();
 
-    public static void register(HashMap<String, BlockType> blocks) {
+    public static void register(Cities plugin, HashMap<String, BlockType> blocks) {
         blocksByName = blocks;
 
         Consumer<BlockType> r = (i) -> {
@@ -24,7 +25,7 @@ public class Blocks {
         };
 
         //REGISTER
-        r.accept(new FoundingBlock());
+        r.accept(new FoundingBlock(plugin));
         //END REGISTER
 
     }

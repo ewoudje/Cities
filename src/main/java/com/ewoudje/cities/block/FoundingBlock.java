@@ -1,17 +1,23 @@
 package com.ewoudje.cities.block;
 
-import com.ewoudje.cities.CityBlock;
-import com.ewoudje.cities.CityPlayer;
-import com.ewoudje.cities.CityWorld;
-import com.ewoudje.cities.CityItem;
+import com.ewoudje.cities.*;
+import com.ewoudje.cities.city.City;
 import com.ewoudje.cities.item.ItemType;
 import de.tr7zw.nbtapi.NBTCompound;
 import me.wiefferink.interactivemessenger.processing.Message;
+import org.bukkit.Location;
 import org.bukkit.Material;
 
 import javax.annotation.Nonnull;
 
 public class FoundingBlock implements ItemType, BlockType {
+
+    private float minDistance;
+
+    public FoundingBlock(Cities plugin) {
+        double tmp = plugin.getConfig().getDouble("minimum-distance-cities");
+        minDistance = (float) (tmp * tmp);
+    }
 
     @Override
     public boolean onBuild(CityWorld world, CityPlayer player, CityItem item, CityBlock b) {
@@ -24,6 +30,12 @@ public class FoundingBlock implements ItemType, BlockType {
 
         if (!compound.getBoolean("ready")) {
             player.send(Message.fromKey("founding-not-ready"));
+            return false;
+        }
+
+        if (world.getCities().stream().flatMap((p) -> p.getClaimPoints().stream())
+                     .anyMatch((l) -> b.getBlock().getLocation().distanceSquared(l) < minDistance)) {
+            player.send(Message.fromKey("too-close-city"));
             return false;
         }
 

@@ -5,6 +5,7 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
+import com.ewoudje.cities.api.OfflinePlayer;
 import com.ewoudje.cities.city.City;
 import me.wiefferink.interactivemessenger.generators.TellrawGenerator;
 import me.wiefferink.interactivemessenger.parsers.YamlParser;

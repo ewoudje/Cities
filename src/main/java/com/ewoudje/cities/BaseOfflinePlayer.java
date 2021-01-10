@@ -1,5 +1,6 @@
 package com.ewoudje.cities;
 
+import com.ewoudje.cities.api.OfflinePlayer;
 import de.tr7zw.nbtapi.NBTCompound;
 import org.bukkit.entity.AnimalTamer;
 import org.bukkit.entity.Player;
@@ -7,21 +8,17 @@ import org.bukkit.entity.Player;
 import java.util.Objects;
 import java.util.UUID;
 
-public class OfflinePlayer implements AnimalTamer {
+public class BaseOfflinePlayer implements com.ewoudje.cities.api.OfflinePlayer {
     private final UUID id;
     private final String name;
 
-    public OfflinePlayer(UUID id, String name) {
+    public BaseOfflinePlayer(UUID id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public OfflinePlayer(NBTCompound c) {
+    public BaseOfflinePlayer(NBTCompound c) {
         this(c.getUUID("id"), c.getString("name"));
-    }
-
-    public static OfflinePlayer fromPlayer(Player p) {
-        return new OfflinePlayer(p.getUniqueId(), p.getName());
     }
 
     @Override
@@ -49,7 +46,7 @@ public class OfflinePlayer implements AnimalTamer {
             } else return false;
         } else {
             OfflinePlayer that = (OfflinePlayer) o;
-            return id.equals(that.id);
+            return id.equals(that.getUniqueId());
         }
     }
 

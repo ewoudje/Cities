@@ -34,6 +34,14 @@ public class CityPlayerProvider extends DrinkProvider<CityPlayer> {
     @Override
     public CityPlayer provide(@Nonnull CommandArg arg, @Nonnull List<? extends Annotation> annotations) throws CommandExitMessage {
         String name = arg.get();
+
+        for (Annotation a : annotations) {
+            System.out.println(a.toString());
+        }
+
+        if (name.equals("null") && annotations.stream().anyMatch((p) -> p.annotationType().equals(Noneable.class)))
+            return null;
+
         CityPlayer p = plugin.getPlayer(plugin.getServer().getPlayer(name));
         if (p != null) {
             return p;
@@ -57,5 +65,6 @@ public class CityPlayerProvider extends DrinkProvider<CityPlayer> {
 
     public void bind(CommandService drink) {
         drink.bind(CityPlayer.class).toProvider(this);
+        drink.bind(CityPlayer.class).annotatedWith(Noneable.class).toProvider(this);
     }
 }

@@ -1,6 +1,7 @@
 package com.ewoudje.cities.city;
 
 import com.ewoudje.cities.*;
+import com.ewoudje.cities.api.OfflinePlayer;
 import de.tr7zw.nbtapi.NBTCompound;
 import de.tr7zw.nbtapi.NBTCompoundList;
 import me.wiefferink.interactivemessenger.processing.Message;
@@ -65,12 +66,12 @@ public class City {
         city.id = compound.getUUID("id");
         city.name = compound.getString("name");
         city.members = compound.getCompoundList("players")
-                .stream().map(OfflinePlayer::new).collect(Collectors.toList());
+                .stream().map(OfflinePlayer::fromCompound).collect(Collectors.toList());
 
         city.invited = compound.getCompoundList("invited")
-                .stream().map(OfflinePlayer::new).collect(Collectors.toList());
+                .stream().map(OfflinePlayer::fromCompound).collect(Collectors.toList());
 
-        city.owner = new OfflinePlayer(compound.getCompound("owner"));
+        city.owner = OfflinePlayer.fromCompound(compound.getCompound("owner"));
         city.foundingBlock = world.getBlock(compound.getUUID("foundingBlock"));
         return city;
     }
@@ -134,5 +135,9 @@ public class City {
 
     public void broadcast(Message message, Cities plugin) {
         getOnlineMembers(plugin).forEach((p) -> p.send(message));
+    }
+
+    public void setOwner(OfflinePlayer owner) {
+        this.owner = owner;
     }
 }

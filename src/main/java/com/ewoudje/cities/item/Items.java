@@ -1,5 +1,6 @@
 package com.ewoudje.cities.item;
 
+import com.ewoudje.cities.Cities;
 import com.ewoudje.cities.CityItem;
 import com.ewoudje.cities.CityWorld;
 import com.ewoudje.cities.block.BlockType;
@@ -18,7 +19,7 @@ public class Items {
     private static Map<Class<? extends ItemType>, ItemType> itemsByClass = new HashMap<>();
     private static HashMap<String, ItemType> itemsByName = new HashMap<>();
 
-    public static void register(HashMap<String, ItemType> items) {
+    public static void register(Cities plugin, HashMap<String, ItemType> items) {
         itemsByName = items;
 
         Consumer<ItemType> r = (i) -> {
