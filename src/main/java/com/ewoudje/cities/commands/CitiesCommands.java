@@ -109,4 +109,19 @@ public class CitiesCommands {
         player.send(Message.fromKey("leave-city").replacements(c.getName()));
     }
 
+    @Command(name = "owner", aliases = {}, desc = "Set owner of city", usage = "")
+    @Require("cities.user.owner")
+    public void owner(@Sender @RequireCity CityPlayer player, CityPlayer owner) {
+        owner(player, owner, player.getCity());
+    }
+
+    @Command(name = "owner", aliases = {}, desc = "Set owner of city", usage = "")
+    @Require("cities.admin.owner")
+    public void owner(@Sender CityPlayer player, @Noneable CityPlayer owner, City city) {
+        city.setOwner(owner == null ? null : owner.getOfflinePlayer());
+
+        player.send(Message.fromKey("owner-changed")
+                .replacements(city.getName(), owner == null ? "null" : owner.getPlayer().getName()));
+    }
+
 }
