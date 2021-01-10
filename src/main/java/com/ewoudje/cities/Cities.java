@@ -59,8 +59,8 @@ public final class Cities extends JavaPlugin {
 
         drink.registerCommands();
 
-        Blocks.register(new HashMap<>());
-        Items.register(items);
+        Blocks.register(this, new HashMap<>());
+        Items.register(this, items);
         recipesHandler = new RecipesHandler(this);
 
         getServer().getPluginManager().registerEvents(new CityPlayerListener(this, players), this);
