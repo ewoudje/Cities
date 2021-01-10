@@ -31,7 +31,7 @@ public class CitiesCommands {
     }
 
     @Command(name = "create", aliases = {}, desc = "Create City", usage = "")
-    @Require("cities.create")
+    @Require("cities.user.create")
     public void create(@Sender CityPlayer player, @Text String name) {
         if (player.getCity() != null) {
             player.send(Message.fromKey("already-in-city").replacements(player.getCity().getName()));
@@ -51,7 +51,7 @@ public class CitiesCommands {
     }
 
     @Command(name = "list", aliases = {}, desc = "List cities", usage = "")
-    @Require("cities.list")
+    @Require("cities.user.list")
     public void list(@Sender CityPlayer player) {
         List<City> cities = player.getWorld().getCities();
 
@@ -65,7 +65,7 @@ public class CitiesCommands {
     }
 
     @Command(name = "join", aliases = {}, desc = "Join city", usage = "")
-    @Require("cities.join")
+    @Require("cities.user.join")
     public void join(@Sender CityPlayer player, City city) {
 
         if (player.getCity() != null) {
@@ -87,7 +87,7 @@ public class CitiesCommands {
     }
 
     @Command(name = "invite", aliases = {}, desc = "Invite person in city", usage = "")
-    @Require("cities.invite")
+    @Require("cities.user.invite")
     public void invite(@Sender @RequireCity CityPlayer player, CityPlayer invitee) {
 
         player.getCity().invite(invitee);
@@ -99,7 +99,7 @@ public class CitiesCommands {
     }
 
     @Command(name = "leave", aliases = {}, desc = "Leave city", usage = "")
-    @Require("cities.leave")
+    @Require("cities.user.leave")
     public void leave(@Sender @RequireCity CityPlayer player) {
         City c = player.getCity();
 
