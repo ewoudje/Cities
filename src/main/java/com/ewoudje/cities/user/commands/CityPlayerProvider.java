@@ -2,6 +2,7 @@ package com.ewoudje.cities.user.commands;
 
 import com.ewoudje.cities.Cities;
 import com.ewoudje.cities.CityPlayer;
+import com.ewoudje.cities.commands.Noneable;
 import com.jonahseguin.drink.CommandService;
 import com.jonahseguin.drink.argument.CommandArg;
 import com.jonahseguin.drink.parametric.DrinkProvider;

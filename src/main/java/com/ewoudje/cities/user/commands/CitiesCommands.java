@@ -9,6 +9,7 @@ import com.ewoudje.cities.CityPlayer;
 import com.ewoudje.cities.city.City;
 import com.ewoudje.cities.CityItem;
 import com.ewoudje.cities.block.FoundingBlock;
+import com.ewoudje.cities.commands.Noneable;
 import com.ewoudje.cities.item.InventoryDesigner;
 import com.ewoudje.cities.item.ItemIcon;
 import com.ewoudje.cities.item.ItemNone;
@@ -49,7 +50,7 @@ public class CitiesCommands {
     }
 
     @Command(name = "create", aliases = {}, desc = "Create City", usage = "")
-    @Require("cities.create")
+    @Require("cities.user.create")
     public void create(@Sender CityPlayer player, @Text String name) {
         if (player.getCity() != null) {
             player.send(Message.fromKey("already-in-city").replacements(player.getCity().getName()));
@@ -69,7 +70,7 @@ public class CitiesCommands {
     }
 
     @Command(name = "list", aliases = {}, desc = "List cities", usage = "")
-    @Require("cities.list")
+    @Require("cities.user.list")
     public void list(@Sender CityPlayer player) {
         List<City> cities = player.getWorld().getCities();
 
@@ -83,7 +84,7 @@ public class CitiesCommands {
     }
 
     @Command(name = "join", aliases = {}, desc = "Join city", usage = "")
-    @Require("cities.join")
+    @Require("cities.user.join")
     public void join(@Sender CityPlayer player, City city) {
 
         if (player.getCity() != null) {
@@ -105,7 +106,7 @@ public class CitiesCommands {
     }
 
     @Command(name = "invite", aliases = {}, desc = "Invite person in city", usage = "")
-    @Require("cities.invite")
+    @Require("cities.user.invite")
     public void invite(@Sender @RequireCity CityPlayer player, CityPlayer invitee) {
 
         player.getCity().invite(invitee);
@@ -117,7 +118,7 @@ public class CitiesCommands {
     }
 
     @Command(name = "leave", aliases = {}, desc = "Leave city", usage = "")
-    @Require("cities.leave")
+    @Require("cities.user.leave")
     public void leave(@Sender @RequireCity CityPlayer player) {
         City c = player.getCity();
 
@@ -128,84 +129,34 @@ public class CitiesCommands {
     }
 
     @Command(name = "test", aliases = {}, desc = "Test", usage = "")
-    @Require("cities.test")
+    @Require("cities.user.test")
     public void test(@Sender CityPlayer player) {
-        if (plugin.getModeHandler().get(player.getPlayer()) == null) {
-            plugin.getModeHandler().goInto(player, new Mode() {
 
-                private final InventoryDesigner inventoryDesigner = new InventoryDesigner(Material.AIR);
-
-                {
-                    CityItem item = Items.createItem(player.getWorld(), ItemNone.class);
-                    for (int i = 36; i <= 44; i++)
-                        inventoryDesigner.set(i, item);
-
-                    inventoryDesigner.set(37, Items.createItem(player.getWorld(), ItemIcon.MINUS));
-                    inventoryDesigner.set(38, Items.createItem(player.getWorld(), ItemIcon.ROAD));
-                    inventoryDesigner.set(39, Items.createItem(player.getWorld(), ItemIcon.PLUS));
-                }
-
-                @Override
-                public void onLeftClick(int slot, @Nonnull ModeHandler modeHandler, @Nonnull CityPlayer player, @Nullable CityBlock block) {
-                    String bs = "null";
-                    if (block != null)
-                        if (block.getType() != null) {
-                            bs = block.getType().getName();
-                        } else {
-                            bs = block.getBlock().getType().name();
-                        }
-
-                    plugin.getLogger().info("LEFTCLICK Slot: " + slot + ", Block: " + bs);
-                }
-
-                @Override
-                public void onRightClick(int slot, @Nonnull ModeHandler modeHandler, @Nonnull CityPlayer player, @Nullable CityBlock block) {
-                    String bs = "null";
-                    if (block != null)
-                        if (block.getType() != null) {
-                            bs = block.getType().getName();
-                        } else {
-                            bs = block.getBlock().getType().name();
-                        }
-
-                    plugin.getLogger().info("RIGHTCLICK Slot: " + slot + ", Block: " + bs);
-                }
-
-                @Override
-                public void init(CityPlayer player) {
-
-                }
-
-                @Override
-                @Nullable
-                public ModeStatus getStatus() {
-                    return null;
-                }
-
-                @Override
-                public @Nonnull List<ModeSetting> getSettings() {
-                    return List.of(ModeSetting.FLY, ModeSetting.CLIENTMODE, ModeSetting.INVULNERABLE, ModeSetting.INSTA_DESTROY);
-                }
-
-                @Nonnull
-                @Override
-                public List<ItemStack> getItemList() {
-                    return inventoryDesigner.getPlayerFullItemList();
-                }
-            });
-        } else {
-            plugin.getModeHandler().disable(player.getPlayer());
-        }
     }
 
     @Command(name = "claim", aliases = {}, desc = "claim mode", usage = "")
-    @Require("cities.claim")
+    @Require("cities.user.claim")
     public void claim(@Sender @RequireCity CityPlayer s) {
         if (plugin.getModeHandler().get(s.getPlayer()) == null) {
             plugin.getModeHandler().goInto(s, new ClaimPlotMode());
         } else {
             plugin.getModeHandler().disable(s.getPlayer());
         }
+    }
+
+    @Command(name = "owner", aliases = {}, desc = "Set owner of city", usage = "")
+    @Require("cities.user.owner")
+    public void owner(@Sender @RequireCity CityPlayer player, CityPlayer owner) {
+        owner(player, owner, player.getCity());
+    }
+
+    @Command(name = "owner", aliases = {}, desc = "Set owner of city", usage = "")
+    @Require("cities.admin.owner")
+    public void owner(@Sender CityPlayer player, @Noneable CityPlayer owner, City city) {
+        city.setOwner(owner == null ? null : owner.getOfflinePlayer());
+
+        player.send(Message.fromKey("owner-changed")
+                .replacements(city.getName(), owner == null ? "null" : owner.getPlayer().getName()));
     }
 
 }
