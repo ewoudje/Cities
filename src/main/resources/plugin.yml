@@ -1,6 +1,6 @@
-name: Cities
+name: "Towns&Kings"
 version: ${project.version}
-main: com.ewoudje.cities.Cities
+main: com.ewoudje.townskings.api.TKPlugin
 api-version: 1.16
 authors: [ ewoudje ]
 description: Cool plugin

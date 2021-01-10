@@ -3,4 +3,4 @@ version: ${project.version}
 
 save-interval: 50
 claim-size: 50
-minimum-distance-cities: 150
+minimum-distance-towns: 150

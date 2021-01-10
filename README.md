@@ -1,9 +1,9 @@
-# Cities
+# TKPlugin
 A Minecraft plugin
 
 ## What is it?
 This plugin is meant to be used in a simple survival server where you want to add some spice.
-The idea is that you can build a city alone/with friends and build 'empty' buildings for the plugin.
+The idea is that you can build a town alone/with friends and build 'empty' buildings for the plugin.
 These 'empty' buildings are buildings that are going to get assesed automatically.
 Based of these assesments the buildings can automate things.
 

@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.ewoudje</groupId>
-    <artifactId>cities</artifactId>
+    <artifactId>towns-kings</artifactId>
     <version>dev</version>
     <packaging>jar</packaging>
 
-    <name>Cities</name>
+    <name>TKPlugin</name>
 
     <description>Cool plugin</description>
     <properties>

@@ -1,15 +1,15 @@
 no-permission: "[red]You don't have the [b]permissions[/b] to do this!!"
-invalid-city: "[red] City [b]%0%[/b] does not exist."
-have-no-city: "[red]You are not in a city..."
+invalid-town: "[red] Town [b]%0%[/b] does not exist."
+have-no-town: "[red]You are not in a town..."
 invalid-item: "[red]Select the right item for this command."
 invalid-player: "[red]This player doesn't exist"
 not-implemented: "[red]This is yet to be implemented!"
 
-entered-city: "[green] Welcome to [gold][b]%1%[/b][reset]!"
-left-city: "[red] You left city [gold][b]%1%[/b][red]!"
+entered-town: "[green] Welcome to [gold][b]%1%[/b][reset]!"
+left-town: "[red] You left town [gold][b]%1%[/b][red]!"
 
-already-in-city:
-  - "[red]You are already in the city "
+already-in-town:
+  - "[red]You are already in the town "
   - "[gold][b]'%0%'"
   - " hover: [red]Leave %0%"
   - " command: /ct leave"
@@ -17,41 +17,41 @@ already-in-city:
 
 version: "Version: [b]%0%[/b]"
 
-when-placed-create-city: "When you place this [green][b]block[/b][reset], the city will be created!"
-create-city: "You created the city [green][b]%0%[/b][reset]!!"
-too-close-city: "[red]You are to close to another city!"
+when-placed-create-town: "When you place this [green][b]block[/b][reset], the town will be created!"
+create-town: "You created the town [green][b]%0%[/b][reset]!!"
+too-close-town: "[red]You are to close to another town!"
 founding-not-ready: "[red]This block is yet to be configured! Use /ct create <name>"
 
-broadcast-create-city:
-  - "[yellow]%0%[reset] has created the city "
+broadcast-create-town:
+  - "[yellow]%0%[reset] has created the town "
   - "[bold][green]%1%"
   - " hover: [gold]Join %1%"
   - " command: /ct join %1%"
 
-broadcast-city-disband:
+broadcast-town-disband:
   - "[gold]%0%[red] has been disbanded!!"
 
-list-cities-start: "All the cities in this world:[break]"
-list-cities-entry:
+list-towns-start: "All the towns in this world:[break]"
+list-towns-entry:
   - "[green] - [reset] %0% [break]"
   - "hover: [gold]Join %0%"
   - "command: /ct join %0%"
 
-join-city: "You joined city [gold][b]'%0%'[reset]!"
+join-town: "You joined town [gold][b]'%0%'[reset]!"
 wants-join:
-  - "[green]%0% wants to join your city!"
+  - "[green]%0% wants to join your town!"
   - "hover: Invite %0%"
   - "command: /ct invite %0%"
-city-invite:
-  - "[green]%0%[reset] invited you to the city [gold][b]%1%[/b][reset]!"
+town-invite:
+  - "[green]%0%[reset] invited you to the town [gold][b]%1%[/b][reset]!"
   - "hover: Join %1%"
   - "command: /ct join %1%"
 need-invite: "[red]You need an invite!"
-invite-success: "[green]You invited %0% to your city!"
-player-joined: "[green]%0% joined our city, Say hello to him!"
-player-left: "[red]%0% left our city, KILL HIM IN HIS SLEEP!"
+invite-success: "[green]You invited %0% to your town!"
+player-joined: "[green]%0% joined our town, Say hello to him!"
+player-left: "[red]%0% left our town, KILL HIM IN HIS SLEEP!"
 
-leave-city: "You left city [gold][b]'%0%'[reset]!"
+leave-town: "You left town [gold][b]'%0%'[reset]!"
 
 #Blocks
 founding-block: "[gold]Founding Lectern"
