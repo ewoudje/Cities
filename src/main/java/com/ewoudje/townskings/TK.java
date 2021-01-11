@@ -55,7 +55,7 @@ public final class TK extends JavaPlugin implements TKPlugin {
                 "languages",                           // Folder where the languages are stored
                 getConfig().getString("languages"),     // The language to use indicated by the plugin user
                 "EN",                                  // The default language, expected to be shipped with the plugin and should be complete, fills in gaps in the user-selected language
-                Collections.singletonList("[TKPlugin] ") // Chat prefix to use with Message#prefix(), could of course come from the config file
+                Collections.singletonList("[Towns&Kings] ") // Chat prefix to use with Message#prefix(), could of course come from the config file
         );
 
         new TKPlayerSenderProvider(this).bind(drink);
