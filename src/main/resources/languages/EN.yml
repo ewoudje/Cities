@@ -55,6 +55,9 @@ player-left: "[red]%0% left our town, KILL HIM IN HIS SLEEP!"
 
 leave-town: "You left town [gold][b]'%0%'[reset]!"
 
+select-block1: "You selected corner 1!"
+select-block2: "You selected corner 2!"
+
 #Blocks
 founding-block: "[gold]Founding Lectern"
 

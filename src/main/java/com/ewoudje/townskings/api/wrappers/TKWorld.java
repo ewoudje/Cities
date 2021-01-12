@@ -1,12 +1,16 @@
 package com.ewoudje.townskings.api.wrappers;
 
-import com.ewoudje.townskings.BlockPosition;
+import com.ewoudje.townskings.api.town.Plot;
+import com.ewoudje.townskings.api.world.BlockPosition;
 import com.ewoudje.townskings.api.TKPlugin;
 import com.ewoudje.townskings.api.block.BlockData;
 import com.ewoudje.townskings.api.block.BlockType;
+import com.ewoudje.townskings.api.world.Tile;
+import com.ewoudje.townskings.api.world.TilePosition;
 import com.ewoudje.townskings.block.Blocks;
 import com.ewoudje.townskings.block.FoundingBlock;
 import com.ewoudje.townskings.town.Town;
+import com.ewoudje.townskings.world.Plotter;
 import de.bluecolored.bluemap.api.BlueMapAPI;
 import de.bluecolored.bluemap.api.BlueMapMap;
 import de.bluecolored.bluemap.api.BlueMapWorld;
@@ -37,6 +41,7 @@ public class TKWorld {
     private final TKPlugin plugin;
     private HashMap<UUID, TKBlock> blocksViaUUID;
     private HashMap<BlockPosition, TKBlock> blocksViaPos;
+    private HashMap<TilePosition, Tile> tiles;
     private List<Town> towns;
 
     public TKWorld(World world, TKPlugin plugin) {
@@ -52,7 +57,7 @@ public class TKWorld {
     private void load() {
         NBTFile file;
         try {
-            file = new NBTFile(new File(world.getWorldFolder(), "towns.dat"));
+            file = new NBTFile(new File(world.getWorldFolder(), "tk.dat"));
         } catch (IOException e) {
             e.printStackTrace();
             plugin.getLogger().severe("World " + world.getName() + " towns.dat could not be loaded!!!");
@@ -191,5 +196,15 @@ public class TKWorld {
 
     public World getWorld() {
         return world;
+    }
+
+    public Plot getPlotAt(BlockPosition position) {
+        Tile result = tiles.get(TilePosition.fromBlockPos(position));
+        if (result == null) return null;
+        return result.getPlotAt(position.getX(), position.getY(), position.getZ());
+    }
+
+    public void claimPlot(Plot plot) {
+        Plotter.claim(plot, tiles);
     }
 }

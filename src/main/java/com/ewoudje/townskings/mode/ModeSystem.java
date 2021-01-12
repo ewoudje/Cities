@@ -61,7 +61,7 @@ public class ModeSystem {
     }
 
     public void disable() {
-        modifiedChunks.forEach((c) -> ChunkUtil.chunkSend(c, player));
+        updateChunks();
 
         player.getPlayer().teleport(startPos);
         player.getPlayer().updateInventory();
@@ -93,6 +93,7 @@ public class ModeSystem {
 
                 if (event.getPacketType() == PacketType.Play.Client.HELD_ITEM_SLOT) {
                     system.currentSlot = event.getPacket().getIntegers().read(0);
+                    system.mode.onSlotChange(system.currentSlot, modeHandler, system.player);
                 } else if (event.getPacketType() == PacketType.Play.Client.BLOCK_PLACE) {
                     plugin.getServer().getScheduler().callSyncMethod(plugin, () -> {
                         system.mode.onRightClick(system.currentSlot, modeHandler, system.player, system.lookingAt());
@@ -160,7 +161,7 @@ public class ModeSystem {
         }
     }
 
-    private void addModChunk(Chunk chunk) {
+    public void addModChunk(Chunk chunk) {
         if (!modifiedChunks.contains(chunk))
             modifiedChunks.add(chunk);
     }
@@ -171,5 +172,10 @@ public class ModeSystem {
         if (status == null) return;
 
         status.send(player);
+    }
+
+    public void updateChunks() {
+        modifiedChunks.forEach((c) -> ChunkUtil.chunkSend(c, player));
+        modifiedChunks.clear();
     }
 }

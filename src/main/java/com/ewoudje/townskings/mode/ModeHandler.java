@@ -4,13 +4,18 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketContainer;
 import com.ewoudje.townskings.api.TKPlugin;
+import com.ewoudje.townskings.api.world.ChangeBlockList;
+import com.ewoudje.townskings.api.world.ChunkChange;
 import com.ewoudje.townskings.api.wrappers.TKPlayer;
 import com.ewoudje.townskings.api.mode.Mode;
 import com.ewoudje.townskings.version.v1_16_R3.PacketUtil;
+import com.ewoudje.townskings.world.FillBlockChange;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -106,5 +111,25 @@ public class ModeHandler {
         ModeSystem system = modes.get(player.getPlayer());
 
         system.updateInventory();
+    }
+
+    public void showBlocks(TKPlayer player, ChangeBlockList change) {
+        List<ChunkChange> changes = change.getChunkChanges();
+        for (ChunkChange c : changes) {
+            ModeSystem system = modes.get(player.getPlayer());
+
+            system.addModChunk(c.getChunk(player.getWorld()));
+            try {
+                ProtocolLibrary.getProtocolManager().sendServerPacket(player.getPlayer(), c.makeMultiPacket());
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void updateChunks(TKPlayer player) {
+        ModeSystem system = modes.get(player.getPlayer());
+
+        system.updateChunks();
     }
 }

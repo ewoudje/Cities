@@ -17,6 +17,8 @@ public interface Mode {
 
     void onRightClick(int slot, @Nonnull ModeHandler modeHandler, @Nonnull TKPlayer player, @Nullable TKBlock block);
 
+    void onSlotChange(int slot, @Nonnull ModeHandler modeHandler, @Nonnull TKPlayer player);
+
     void init(TKPlayer player);
 
     @Nullable

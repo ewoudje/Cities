@@ -1,4 +1,4 @@
-package com.ewoudje.townskings;
+package com.ewoudje.townskings.api.world;
 
 import de.tr7zw.nbtapi.NBTCompound;
 import org.bukkit.block.Block;
@@ -34,6 +34,10 @@ public class BlockPosition {
         return z;
     }
 
+    public short intoChunkPos() {
+        return (short) ((x & 0xF) << 8 | (z & 0xF) << 4 | (y & 0xF));
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -45,5 +49,14 @@ public class BlockPosition {
     @Override
     public int hashCode() {
         return getX() | (getY() << 10) | (getZ() << 20);
+    }
+
+    @Override
+    public String toString() {
+        return "BlockPosition{" +
+                "x=" + x +
+                ", y=" + y +
+                ", z=" + z +
+                '}';
     }
 }
