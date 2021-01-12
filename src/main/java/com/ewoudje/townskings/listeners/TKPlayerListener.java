@@ -1,6 +1,7 @@
 package com.ewoudje.townskings.listeners;
 
 import com.ewoudje.townskings.api.TKPlugin;
+import com.ewoudje.townskings.api.world.BlockPosition;
 import com.ewoudje.townskings.api.wrappers.TKPlayer;
 import com.ewoudje.townskings.api.wrappers.TKWorld;
 import com.ewoudje.townskings.town.Town;
@@ -56,6 +57,7 @@ public class TKPlayerListener implements Listener {
             player.actionBar(Message.fromKey("entered-town")
                     .replacements(player.getPlayer().getName(), player.getVisitTown().getName()));
 
+        player.getFollowTile().setPos(new BlockPosition(player.getPlayer().getLocation()).getChunkPos(), player.getWorld());
     }
 
     @EventHandler

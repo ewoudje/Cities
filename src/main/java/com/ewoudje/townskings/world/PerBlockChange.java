@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public abstract class PerBlockChange implements ChangeBlockList {
@@ -21,7 +22,8 @@ public abstract class PerBlockChange implements ChangeBlockList {
             BlockPosition pos = new BlockPosition(x >> 4, y >> 4, z >> 4);
 
             DynamicChunkChange pc = changes.get(pos);
-            DynamicChunkChange change = Objects.requireNonNullElseGet(pc, () -> new DynamicChunkChange(pos));
+            DynamicChunkChange change = Optional.ofNullable(pc)
+                    .orElseGet(() -> new DynamicChunkChange(pos));
 
             change.put(x, y, z, material);
 

@@ -5,12 +5,14 @@ import com.ewoudje.townskings.api.world.BlockPosition;
 import com.ewoudje.townskings.api.TKPlugin;
 import com.ewoudje.townskings.api.block.BlockData;
 import com.ewoudje.townskings.api.block.BlockType;
+import com.ewoudje.townskings.api.world.ChunkPosition;
 import com.ewoudje.townskings.api.world.Tile;
 import com.ewoudje.townskings.api.world.TilePosition;
 import com.ewoudje.townskings.block.Blocks;
 import com.ewoudje.townskings.block.FoundingBlock;
 import com.ewoudje.townskings.town.Town;
 import com.ewoudje.townskings.world.Plotter;
+import com.ewoudje.townskings.world.TKTile;
 import de.bluecolored.bluemap.api.BlueMapAPI;
 import de.bluecolored.bluemap.api.BlueMapMap;
 import de.bluecolored.bluemap.api.BlueMapWorld;
@@ -28,12 +30,10 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 
 
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class TKWorld {
@@ -82,6 +82,8 @@ public class TKWorld {
         towns = file.getCompoundList("towns").stream()
                 .map((NBTListCompound compound) -> Town.load(compound, this)).collect(Collectors.toList());
 
+
+        tiles = new HashMap<>(); //TODO load tiles from nbt
     }
 
     public void save() {
@@ -206,5 +208,19 @@ public class TKWorld {
 
     public void claimPlot(Plot plot) {
         Plotter.claim(plot, tiles);
+    }
+
+    @Nonnull
+    public Tile getTile(TilePosition position) {
+        return Optional.ofNullable(tiles.get(position)).orElseGet(
+                () -> {
+                    TKTile r = new TKTile(position);
+                    tiles.put(position, r);
+                    return r;
+                });
+    }
+
+    public TKChunk getChunk(ChunkPosition position) {
+        return getTile(position.intoTilePos()).getChunk(position); //TODO keep them and store them
     }
 }

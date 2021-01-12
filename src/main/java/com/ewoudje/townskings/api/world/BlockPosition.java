@@ -1,6 +1,7 @@
 package com.ewoudje.townskings.api.world;
 
 import de.tr7zw.nbtapi.NBTCompound;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 
 public class BlockPosition {
@@ -22,6 +23,10 @@ public class BlockPosition {
         this(b.getX(), b.getY(), b.getZ());
     }
 
+    public BlockPosition(Location l) {
+        this((int) l.getX(), (int) l.getY(), (int) l.getZ());
+    }
+
     public int getX() {
         return x;
     }
@@ -36,6 +41,14 @@ public class BlockPosition {
 
     public short intoChunkPos() {
         return (short) ((x & 0xF) << 8 | (z & 0xF) << 4 | (y & 0xF));
+    }
+
+    public TilePosition getTilePos() {
+        return new TilePosition(Tile.fromBlockPos(x), Tile.fromBlockPos(z));
+    }
+
+    public ChunkPosition getChunkPos() {
+        return new ChunkPosition(x >> 4, z >> 4);
     }
 
     @Override

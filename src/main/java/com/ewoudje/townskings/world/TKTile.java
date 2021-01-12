@@ -1,35 +1,47 @@
 package com.ewoudje.townskings.world;
 
 import com.ewoudje.townskings.api.town.Plot;
+import com.ewoudje.townskings.api.world.ChunkPosition;
 import com.ewoudje.townskings.api.world.Tile;
 import com.ewoudje.townskings.api.world.TilePosition;
+import com.ewoudje.townskings.api.wrappers.TKChunk;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class TKTile implements Tile {
 
     private final TilePosition pos;
-    private final List<PlotEntry> plots = new ArrayList<>();
+    private final TKChunk[] chunks = new TKChunk[16];
+    private final List<TKChunk.PlotEntry> entries = new ArrayList<>();
 
     public TKTile(TilePosition pos) {
         this.pos = pos;
+
     }
 
     @Override
     public void addPlot(Plot plot, int x, int y, int z, int xS, int yS, int zS) {
-        plots.add(new PlotEntry(plot, x, y, z, xS, yS, zS));
+        int i = ((z >> 4 - pos.getZ()) * Tile.CHUNKS_SIZE) + (x >> 4 - pos.getX());
+        int i2 = ((zS >> 4 - pos.getZ()) * Tile.CHUNKS_SIZE) + (xS >> 4 - pos.getX());
+
+        if (i != i2) {
+            //TODO fix plot over multiple chunks
+        } else {
+            entries.add(chunks[i].addPlot(plot, x, y, z, xS, yS, zS));
+        }
     }
 
     @Override
     public Plot getPlotAt(int x, int y, int z) {
-        for (PlotEntry p : plots) {
-            if (x > p.x && x < p.xE &&
-                z > p.z && z < p.zE) {
+        for (TKChunk.PlotEntry p : entries) {
+            if (x > p.getX() && x < p.getXE() &&
+                    z > p.getZ() && z < p.getZE()) {
 
-                if (p.plot.isInfiniteDepth() || (y > p.y && y < p.yE)) {
-                    return p.plot;
+                if (p.getPlot().isInfiniteDepth() || (y > p.getY() && y < p.getYE())) {
+                    return p.getPlot();
                 }
             }
         }
@@ -39,7 +51,7 @@ public class TKTile implements Tile {
 
     @Override
     public List<Plot> getPlots() {
-        return plots.stream().map((p) -> p.plot).collect(Collectors.toList());
+        return entries.stream().map(TKChunk.PlotEntry::getPlot).collect(Collectors.toList());
     }
 
     @Override
@@ -47,19 +59,12 @@ public class TKTile implements Tile {
         return pos;
     }
 
-    private static class PlotEntry {
-        private final Plot plot;
-        private final int x, y, z;
-        private final int xE, yE, zE;
-
-        public PlotEntry(Plot plot, int x, int y, int z, int xS, int yS, int zS) {
-            this.plot = plot;
-            this.x = x;
-            this.y = y;
-            this.z = z;
-            this.xE = x + xS;
-            this.yE = y + yS;
-            this.zE = z + zS;
-        }
+    @Override
+    public TKChunk getChunk(ChunkPosition position) {
+        int x = position.getX() - (pos.getX() << 2);
+        int y = position.getZ() - (pos.getZ() << 2);
+        return Objects.requireNonNullElseGet(chunks[y * Tile.CHUNKS_SIZE + x],
+                () -> chunks[y * Tile.CHUNKS_SIZE + x] = new TKChunk(position));
     }
+
 }

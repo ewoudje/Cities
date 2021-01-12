@@ -6,7 +6,9 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.ewoudje.townskings.api.OfflinePlayer;
+import com.ewoudje.townskings.api.world.BlockPosition;
 import com.ewoudje.townskings.town.Town;
+import com.ewoudje.townskings.world.DynamicTKTile;
 import me.wiefferink.interactivemessenger.generators.TellrawGenerator;
 import me.wiefferink.interactivemessenger.parsers.YamlParser;
 import me.wiefferink.interactivemessenger.processing.Message;
@@ -22,10 +24,13 @@ public class TKPlayer {
     private TKWorld world;
     private Town town;
     private Town visitTown;
+    private DynamicTKTile tile;
 
     public TKPlayer(@Nonnull Player player, @Nonnull TKWorld world) {
         this.player = player;
         this.world = world;
+        this.tile = new DynamicTKTile();
+        this.tile.setPos(new BlockPosition(player.getLocation()).getChunkPos(), world);
 
         town = world.getTKPlugin().stream().filter((c) -> c.contains(getOfflinePlayer())).findAny()
                 .orElse(null);
@@ -104,5 +109,9 @@ public class TKPlayer {
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         }
+    }
+
+    public DynamicTKTile getFollowTile() {
+        return tile;
     }
 }
