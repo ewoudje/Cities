@@ -93,7 +93,10 @@ public class ModeSystem {
 
                 if (event.getPacketType() == PacketType.Play.Client.HELD_ITEM_SLOT) {
                     system.currentSlot = event.getPacket().getIntegers().read(0);
-                    system.mode.onSlotChange(system.currentSlot, modeHandler, system.player);
+                    plugin.getServer().getScheduler().callSyncMethod(plugin, () -> {
+                        system.mode.onSlotChange(system.currentSlot, modeHandler, system.player);
+                        return null;
+                    });
                 } else if (event.getPacketType() == PacketType.Play.Client.BLOCK_PLACE) {
                     plugin.getServer().getScheduler().callSyncMethod(plugin, () -> {
                         system.mode.onRightClick(system.currentSlot, modeHandler, system.player, system.lookingAt());
