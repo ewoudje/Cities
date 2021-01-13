@@ -116,11 +116,18 @@ public class TKWorld {
 
         BlueMapAPI.getInstance().ifPresent(api -> {
             BlueMapWorld mw = api.getWorld(world.getUID()).orElseThrow(() -> new NullPointerException("No map for world: " + world.getName()));
-            BlueMapMap map = mw.getMaps().stream().filter((m) -> m.getId().equals("world")).findAny().orElse(null);
+            BlueMapMap map = mw.getMaps().stream().filter((m) -> m.getId().equals(this.world.getName())).findAny().orElse(null);
             try {
                 MarkerAPI m = api.getMarkerAPI();
-                MarkerSet set = m.getMarkerSet("TKPlugin")
-                        .orElseGet(() -> m.createMarkerSet("TKPlugin"));
+                MarkerSet set = m.getMarkerSet("Towns")
+                        .orElseGet(() -> m.createMarkerSet("Towns"));
+
+
+                for (Marker mm : set.getMarkers()) {
+                    if (towns.stream().noneMatch((c) -> c.getName().equals(mm.getLabel()))) {
+                        set.removeMarker(mm);
+                    }
+                }
 
                 for (Town c : towns) {
                     Optional<Marker> marker = set.getMarker(c.getName());
