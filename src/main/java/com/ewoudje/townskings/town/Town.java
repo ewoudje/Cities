@@ -1,12 +1,17 @@
 package com.ewoudje.townskings.town;
 
 import com.ewoudje.townskings.api.OfflinePlayer;
+import com.ewoudje.townskings.api.PlotOwner;
 import com.ewoudje.townskings.api.TKPlugin;
+import com.ewoudje.townskings.api.town.Plot;
+import com.ewoudje.townskings.api.town.PlotSettings;
 import com.ewoudje.townskings.api.wrappers.TKBlock;
 import com.ewoudje.townskings.api.wrappers.TKPlayer;
 import com.ewoudje.townskings.api.wrappers.TKWorld;
+import com.ewoudje.townskings.town.plot.TKPlot;
 import de.tr7zw.nbtapi.NBTCompound;
 import de.tr7zw.nbtapi.NBTCompoundList;
+import de.tr7zw.nbtapi.NBTListCompound;
 import me.wiefferink.interactivemessenger.processing.Message;
 import org.bukkit.Location;
 
@@ -16,7 +21,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class Town {
+public class Town implements PlotOwner {
 
     private final TKWorld world;
 
@@ -27,6 +32,7 @@ public class Town {
     private TKBlock foundingBlock;
     private List<OfflinePlayer> members;
     private List<OfflinePlayer> invited;
+    private List<Plot> plots;
 
     private Town(TKWorld world) {
         this.world = world;
@@ -40,6 +46,7 @@ public class Town {
         this.members = new ArrayList<>();
         this.foundingBlock = foundingBlock;
         this.invited = new ArrayList<>();
+        this.plots = new ArrayList<>();
         join(owner);
     }
 
@@ -60,6 +67,11 @@ public class Town {
         }
 
         compound.setUUID("foundingBlock", foundingBlock.getId());
+        NBTCompoundList plNbt = compound.getCompoundList("plots");
+
+        for (Plot p : plots) {
+            p.save(plNbt.addCompound());
+        }
 
     }
 
@@ -75,6 +87,33 @@ public class Town {
 
         town.owner = OfflinePlayer.fromCompound(compound.getCompound("owner"));
         town.foundingBlock = world.getBlock(compound.getUUID("foundingBlock"));
+        town.plots = compound.getCompoundList("plots")
+                .stream().map((NBTListCompound c) -> TKPlot.fromCompound(c, (u) -> new PlotSettings() {
+                    @Override
+                    public String getName() {
+                        return "WOW";
+                    }
+
+                    @Override
+                    public PlotOwner getOwner() {
+                        return town;
+                    }
+
+                    @Override
+                    public Town getTown() {
+                        return town;
+                    }
+
+                    @Override
+                    public UUID getId() {
+                        return u;
+                    }
+                })).collect(Collectors.toList());
+
+        for (Plot plot : town.plots) {
+            world.claimPlot(plot);
+        }
+
         return town;
     }
 
@@ -141,5 +180,12 @@ public class Town {
 
     public void setOwner(OfflinePlayer owner) {
         this.owner = owner;
+    }
+
+    @Override
+    public void onPlotAdd(Plot plot) {
+        if (this.plots.contains(plot)) return;
+
+        this.plots.add(plot);
     }
 }

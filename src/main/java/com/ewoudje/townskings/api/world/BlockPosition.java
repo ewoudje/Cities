@@ -1,6 +1,7 @@
 package com.ewoudje.townskings.api.world;
 
 import de.tr7zw.nbtapi.NBTCompound;
+import de.tr7zw.nbtapi.NBTListCompound;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 
@@ -49,6 +50,12 @@ public class BlockPosition {
 
     public ChunkPosition getChunkPos() {
         return new ChunkPosition(x >> 4, z >> 4);
+    }
+
+    public void save(NBTCompound compound) {
+        compound.setInteger("x", getX());
+        compound.setInteger("y", getY());
+        compound.setInteger("z", getZ());
     }
 
     @Override

@@ -19,6 +19,10 @@ public class TKTile implements Tile {
 
     public TKTile(TilePosition pos) {
         this.pos = pos;
+
+        for (int i = 0; i < chunks.length; i++) {
+            chunks[i] = new TKChunk(pos.toChunkPos());
+        }
     }
 
     @Override
@@ -62,8 +66,7 @@ public class TKTile implements Tile {
     public TKChunk getChunk(ChunkPosition position) {
         int x = position.getX() - (pos.getX() << 2);
         int y = position.getZ() - (pos.getZ() << 2);
-        return Objects.requireNonNullElseGet(chunks[y * Tile.CHUNKS_SIZE + x],
-                () -> chunks[y * Tile.CHUNKS_SIZE + x] = new TKChunk(position));
+        return chunks[y * Tile.CHUNKS_SIZE + x];
     }
 
 }

@@ -46,4 +46,8 @@ public class TilePosition {
     public int hashCode() {
         return Objects.hash(getX(), getZ());
     }
+
+    public ChunkPosition toChunkPos() {
+        return new ChunkPosition(x << 2, z << 2);
+    }
 }

@@ -1,5 +1,6 @@
 package com.ewoudje.townskings.user.mode;
 
+import com.ewoudje.townskings.api.PlotOwner;
 import com.ewoudje.townskings.api.town.PlotSettings;
 import com.ewoudje.townskings.api.world.BlockPosition;
 import com.ewoudje.townskings.api.wrappers.TKBlock;
@@ -13,6 +14,7 @@ import com.ewoudje.townskings.api.mode.Mode;
 import com.ewoudje.townskings.mode.ModeHandler;
 import com.ewoudje.townskings.mode.ModeSetting;
 import com.ewoudje.townskings.mode.ModeStatus;
+import com.ewoudje.townskings.town.Town;
 import com.ewoudje.townskings.town.plot.TKPlot;
 import com.ewoudje.townskings.world.FillBlockChange;
 import com.ewoudje.townskings.world.HollowBlockChange;
@@ -24,6 +26,7 @@ import org.bukkit.inventory.ItemStack;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.UUID;
 
 public class ClaimPlotMode implements Mode {
     private final InventoryDesigner inventoryDesigner = new InventoryDesigner(Material.AIR);
@@ -88,7 +91,27 @@ public class ClaimPlotMode implements Mode {
                 modeHandler.updateInventory(player);
                 break;
             case 8:
-                if (player.getWorld().claimPlot(new TKPlot(start, end, depth, () -> "WOW"))) {
+                if (player.getWorld().claimPlot(new TKPlot(start, end, depth, new PlotSettings() {
+                    @Override
+                    public String getName() {
+                        return "WOW";
+                    }
+
+                    @Override
+                    public PlotOwner getOwner() {
+                        return player.getTown();
+                    }
+
+                    @Override
+                    public Town getTown() {
+                        return player.getTown();
+                    }
+
+                    @Override
+                    public UUID getId() {
+                        return UUID.randomUUID();
+                    }
+                }))) {
                     player.send(Message.fromKey("claimed-spot"));
                     end = null;
                     start = null;

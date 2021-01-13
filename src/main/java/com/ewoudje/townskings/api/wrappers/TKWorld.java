@@ -79,11 +79,11 @@ public class TKWorld {
             blocksViaUUID.put(block.getId(), block);
         }
 
+        tiles = new HashMap<>(); //Tiles are always clean at load
+
         towns = file.getCompoundList("towns").stream()
                 .map((NBTListCompound compound) -> Town.load(compound, this)).collect(Collectors.toList());
 
-
-        tiles = new HashMap<>(); //TODO load tiles from nbt
     }
 
     public void save() {
@@ -214,7 +214,12 @@ public class TKWorld {
     }
 
     public boolean claimPlot(Plot plot) {
-        return Plotter.claim(plot, this, tiles);
+        boolean result = Plotter.claim(plot, this, tiles);
+
+        if (result)
+            plot.getSettings().getTown().onPlotAdd(plot);
+
+        return result;
     }
 
     @Nonnull
