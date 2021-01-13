@@ -21,6 +21,7 @@ import com.google.gson.Gson;
 import com.jonahseguin.drink.CommandService;
 import com.jonahseguin.drink.Drink;
 import de.tr7zw.nbtapi.NBTItem;
+import io.sentry.Sentry;
 import me.wiefferink.interactivemessenger.source.LanguageManager;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -46,47 +47,54 @@ public final class TK extends JavaPlugin implements TKPlugin {
 
     @Override
     public void onEnable() {
+        try {
+            gson = new Gson();
 
-        gson = new Gson();
+            drink = Drink.get(this);
+            languageManager = new LanguageManager(
+                    this,                                  // The plugin (used to get the languages bundled in the jar file)
+                    "languages",                           // Folder where the languages are stored
+                    getConfig().getString("languages"),     // The language to use indicated by the plugin user
+                    "EN",                                  // The default language, expected to be shipped with the plugin and should be complete, fills in gaps in the user-selected language
+                    Collections.singletonList("[Towns&Kings] ") // Chat prefix to use with Message#prefix(), could of course come from the config file
+            );
 
-        drink = Drink.get(this);
-        languageManager = new LanguageManager(
-                this,                                  // The plugin (used to get the languages bundled in the jar file)
-                "languages",                           // Folder where the languages are stored
-                getConfig().getString("languages"),     // The language to use indicated by the plugin user
-                "EN",                                  // The default language, expected to be shipped with the plugin and should be complete, fills in gaps in the user-selected language
-                Collections.singletonList("[Towns&Kings] ") // Chat prefix to use with Message#prefix(), could of course come from the config file
-        );
+            new TKPlayerSenderProvider(this).bind(drink);
+            new TKPlayerProvider(this).bind(drink);
+            new TKProvider(this).bind(drink);
 
-        new TKPlayerSenderProvider(this).bind(drink);
-        new TKPlayerProvider(this).bind(drink);
-        new TKProvider(this).bind(drink);
+            drink.register(new TKCommands(this), "tk", "townskings");
 
-        drink.register(new TKCommands(this), "tk", "townskings");
+            drink.registerCommands();
 
-        drink.registerCommands();
+            Blocks.register(this, new HashMap<>());
+            Items.register(this, items);
+            recipesHandler = new RecipesHandler(this);
+            modeHandler = new ModeHandler(this);
 
-        Blocks.register(this, new HashMap<>());
-        Items.register(this, items);
-        recipesHandler = new RecipesHandler(this);
-        modeHandler = new ModeHandler(this);
+            getServer().getPluginManager().registerEvents(new TKPlayerListener(this, players), this);
+            getServer().getPluginManager().registerEvents(new TKItemListener(this), this);
+            getServer().getPluginManager().registerEvents(new TKBlockListener(this), this);
 
-        getServer().getPluginManager().registerEvents(new TKPlayerListener(this, players), this);
-        getServer().getPluginManager().registerEvents(new TKItemListener(this), this);
-        getServer().getPluginManager().registerEvents(new TKBlockListener(this), this);
+            getServer().getWorlds().forEach((w) -> worlds.put(w, new TKWorld(w, this)));
+            getServer().getOnlinePlayers().forEach((p) -> players.put(p, new TKPlayer(p, getWorld(p.getWorld()))));
 
-        getServer().getWorlds().forEach((w) -> worlds.put(w, new TKWorld(w, this)));
-        getServer().getOnlinePlayers().forEach((p) -> players.put(p, new TKPlayer(p, getWorld(p.getWorld()))));
-
-        getServer().getScheduler().runTaskTimerAsynchronously(this, this::save, 200, getConfig().getInt("save-interval"));
+            getServer().getScheduler().runTaskTimerAsynchronously(this, this::save, 200, getConfig().getInt("save-interval"));
+        } catch (Exception e) {
+            Sentry.captureException(e);
+        }
     }
 
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        recipesHandler.removeRecipes();
-        modeHandler.disable();
-        save();
+        try {
+            recipesHandler.removeRecipes();
+            modeHandler.disable();
+            save();
+        } catch (Exception e) {
+            Sentry.captureException(e);
+        }
     }
 
     public String getVersion() {
