@@ -8,10 +8,7 @@ import com.ewoudje.townskings.api.wrappers.TKChunk;
 import com.ewoudje.townskings.api.wrappers.TKWorld;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class DynamicTKTile implements Tile {
@@ -40,14 +37,7 @@ public class DynamicTKTile implements Tile {
 
     @Override
     public void addPlot(Plot plot, int x, int y, int z, int xS, int yS, int zS) {
-        int i = ((z >> 4 - pos.getZ()) * Tile.CHUNKS_SIZE) + (x >> 4 - pos.getX());
-        int i2 = ((zS >> 4 - pos.getZ()) * Tile.CHUNKS_SIZE) + (xS >> 4 - pos.getX());
-
-        if (i != i2) {
-            //TODO fix plot over multiple chunks
-        } else {
-            chunks[i].addPlot(plot, x, y, z, xS, yS, zS);
-        }
+        throw new NullPointerException();
     }
 
     @Override
@@ -87,31 +77,37 @@ public class DynamicTKTile implements Tile {
     }
 
     private class PlotEntryIterator implements Iterator<TKChunk.PlotEntry> {
-        private List<TKChunk.PlotEntry> list;
+        private List<List<TKChunk.PlotEntry>> list;
         private int i;
+        private int i2;
 
         public void update() {
             list = Arrays.stream(chunks)
-                    .flatMap((c) -> c.getEntries().stream())
+                    .map(TKChunk::getEntries)
                     .collect(Collectors.toList());
         }
 
         @Override
         public boolean hasNext() {
-            return i < (list.size() - 1);
+            return i < (list.size() - 1) && i2 < (list.get(list.size() - 1).size() - 1);
         }
 
         @Override
         public TKChunk.PlotEntry next() {
-            return list.get(i++);
+            if (i2 == list.get(i).size() - 1) {
+                i++;
+                i2 = 0;
+            }
+            return list.get(i).get(i2++);
         }
 
         public List<TKChunk.PlotEntry> getList() {
-            return list;
+            return list.stream().flatMap(Collection::stream).collect(Collectors.toList());
         }
 
         public void reset() {
             i = 0;
+            i2 = 0;
         }
     }
 }

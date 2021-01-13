@@ -18,7 +18,8 @@ public enum ItemIcon implements ItemType {
     TWO_POINT(7, "2point"),
     SHOW_CLAIM(8, "show-claim"),
     DEPTH_OFF(9, "depth-off"),
-    DEPTH_ON(10, "depth-on")
+    DEPTH_ON(10, "depth-on"),
+    APPLY(11, "apply")
     ;
 
     private String displayKey;

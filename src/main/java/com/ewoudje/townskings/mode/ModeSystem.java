@@ -79,7 +79,7 @@ public class ModeSystem {
     public static void register(TKPlugin plugin, ModeHandler modeHandler) {
         ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(plugin,
                 ListenerPriority.NORMAL,
-                PacketType.Play.Client.POSITION_LOOK,  PacketType.Play.Client.POSITION, PacketType.Play.Client.LOOK,
+                PacketType.Play.Client.POSITION_LOOK, PacketType.Play.Client.POSITION, PacketType.Play.Client.LOOK,
                 PacketType.Play.Client.BLOCK_DIG, PacketType.Play.Client.USE_ITEM, PacketType.Play.Client.BLOCK_PLACE,
                 PacketType.Play.Client.HELD_ITEM_SLOT, PacketType.Play.Client.ARM_ANIMATION, PacketType.Play.Client.ENTITY_ACTION,
                 PacketType.Play.Client.WINDOW_CLICK, PacketType.Play.Client.TRANSACTION, PacketType.Play.Client.USE_ENTITY
@@ -94,17 +94,29 @@ public class ModeSystem {
                 if (event.getPacketType() == PacketType.Play.Client.HELD_ITEM_SLOT) {
                     system.currentSlot = event.getPacket().getIntegers().read(0);
                     plugin.getServer().getScheduler().callSyncMethod(plugin, () -> {
-                        system.mode.onSlotChange(system.currentSlot, modeHandler, system.player);
+                        try {
+                            system.mode.onSlotChange(system.currentSlot, modeHandler, system.player);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         return null;
                     });
                 } else if (event.getPacketType() == PacketType.Play.Client.BLOCK_PLACE) {
                     plugin.getServer().getScheduler().callSyncMethod(plugin, () -> {
-                        system.mode.onRightClick(system.currentSlot, modeHandler, system.player, system.lookingAt());
+                        try {
+                            system.mode.onRightClick(system.currentSlot, modeHandler, system.player, system.lookingAt());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         return null;
                     });
                 } else if (event.getPacketType() == PacketType.Play.Client.ARM_ANIMATION) {
                     plugin.getServer().getScheduler().callSyncMethod(plugin, () -> {
-                        system.mode.onLeftClick(system.currentSlot, modeHandler, system.player, system.lookingAt());
+                        try {
+                            system.mode.onLeftClick(system.currentSlot, modeHandler, system.player, system.lookingAt());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         return null;
                     });
                 } else if (event.getPacketType() == PacketType.Play.Client.POSITION ||

@@ -19,13 +19,12 @@ public class TKTile implements Tile {
 
     public TKTile(TilePosition pos) {
         this.pos = pos;
-
     }
 
     @Override
     public void addPlot(Plot plot, int x, int y, int z, int xS, int yS, int zS) {
-        int i = ((z >> 4 - pos.getZ()) * Tile.CHUNKS_SIZE) + (x >> 4 - pos.getX());
-        int i2 = ((zS >> 4 - pos.getZ()) * Tile.CHUNKS_SIZE) + (xS >> 4 - pos.getX());
+        int i = (((z >> 4) - (pos.getZ() << 2)) * Tile.CHUNKS_SIZE) + ((x >> 4) - (pos.getX() << 2));
+        int i2 = ((((z + zS) >> 4) - (pos.getZ() << 2)) * Tile.CHUNKS_SIZE) + (((x + xS) >> 4) - (pos.getX() << 2));
 
         if (i != i2) {
             //TODO fix plot over multiple chunks

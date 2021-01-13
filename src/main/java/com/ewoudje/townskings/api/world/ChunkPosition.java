@@ -55,4 +55,7 @@ public class ChunkPosition {
         return Objects.hash(getX(), getZ());
     }
 
+    public ChunkPosition minus(ChunkPosition chunkPos) {
+        return new ChunkPosition(getX() - chunkPos.getX(), getZ() - chunkPos.getZ());
+    }
 }

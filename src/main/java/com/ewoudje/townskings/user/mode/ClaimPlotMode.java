@@ -1,5 +1,6 @@
 package com.ewoudje.townskings.user.mode;
 
+import com.ewoudje.townskings.api.town.PlotSettings;
 import com.ewoudje.townskings.api.world.BlockPosition;
 import com.ewoudje.townskings.api.wrappers.TKBlock;
 import com.ewoudje.townskings.api.wrappers.TKItem;
@@ -12,6 +13,7 @@ import com.ewoudje.townskings.api.mode.Mode;
 import com.ewoudje.townskings.mode.ModeHandler;
 import com.ewoudje.townskings.mode.ModeSetting;
 import com.ewoudje.townskings.mode.ModeStatus;
+import com.ewoudje.townskings.town.plot.TKPlot;
 import com.ewoudje.townskings.world.FillBlockChange;
 import com.ewoudje.townskings.world.HollowBlockChange;
 import me.wiefferink.interactivemessenger.processing.Message;
@@ -37,6 +39,7 @@ public class ClaimPlotMode implements Mode {
 
         inventoryDesigner.set(36, Items.createItem(null, ItemIcon.TWO_POINT));
         inventoryDesigner.set(37, Items.createItem(null, ItemIcon.SHOW_CLAIM));
+        inventoryDesigner.set(44, Items.createItem(null, ItemIcon.APPLY));
 
         depth(true);
     }
@@ -59,7 +62,7 @@ public class ClaimPlotMode implements Mode {
             case 0:
                 start = new BlockPosition(block.getBlock());
                 player.send(Message.fromKey("select-block1"));
-                if (start.getY() > end.getY()) {
+                if (end != null && start.getY() > end.getY()) {
                     BlockPosition tmp = end;
                     end = start;
                     start = tmp;
@@ -74,7 +77,7 @@ public class ClaimPlotMode implements Mode {
             case 0:
                 end = new BlockPosition(block.getBlock());
                 player.send(Message.fromKey("select-block2"));
-                if (start.getY() > end.getY()) {
+                if (start != null && start.getY() > end.getY()) {
                     BlockPosition tmp = end;
                     end = start;
                     start = tmp;
@@ -84,18 +87,28 @@ public class ClaimPlotMode implements Mode {
                 toggleDepth();
                 modeHandler.updateInventory(player);
                 break;
+            case 8:
+                if (player.getWorld().claimPlot(new TKPlot(start, end, depth, () -> "WOW"))) {
+                    player.send(Message.fromKey("claimed-spot"));
+                    end = null;
+                    start = null;
+                    modeHandler.updateChunks(player);
+                } else {
+                    player.send(Message.fromKey("spot-taken"));
+                }
+                break;
         }
     }
 
     @Override
     public void onSlotChange(int slot, @Nonnull ModeHandler modeHandler, @Nonnull TKPlayer player) {
-        if (slot == 1 && end != null && start != null) {
+        if ((slot == 1 || slot == 8) && end != null && start != null) {
             modeHandler.showBlocks(player, new HollowBlockChange(
                     new BlockPosition(start.getX(), depth ? start.getY() - 20 : start.getY(), start.getZ()),
                     new BlockPosition(end.getX(), depth ? end.getY() + 20 : end.getY(), end.getZ())
                     , Material.GLASS, player.getWorld(), !depth));
             wasSlot1 = true;
-        } else if (slot != 1 && wasSlot1) {
+        } else if (wasSlot1) {
             modeHandler.updateChunks(player);
             wasSlot1 = false;
         }

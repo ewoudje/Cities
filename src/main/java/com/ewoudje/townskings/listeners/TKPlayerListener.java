@@ -74,6 +74,10 @@ public class TKPlayerListener implements Listener {
 
         if (town.isPresent() && !town.get().equals(player.getTown()))
             e.setCancelled(true);
+
+        if (player.getWorld().getPlotAt(new BlockPosition(e.getBlock())) != null) {
+            e.setCancelled(true);
+        }
     }
 
     @EventHandler

@@ -206,8 +206,8 @@ public class TKWorld {
         return result.getPlotAt(position.getX(), position.getY(), position.getZ());
     }
 
-    public void claimPlot(Plot plot) {
-        Plotter.claim(plot, tiles);
+    public boolean claimPlot(Plot plot) {
+        return Plotter.claim(plot, this, tiles);
     }
 
     @Nonnull

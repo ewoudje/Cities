@@ -58,6 +58,9 @@ leave-town: "You left town [gold][b]'%0%'[reset]!"
 select-block1: "You selected corner 1!"
 select-block2: "You selected corner 2!"
 
+claimed-spot: "[green]You successfully claimed a plot"
+spot-taken: "[red]This spot is already taken!"
+
 #Blocks
 founding-block: "[gold]Founding Lectern"
 
@@ -68,3 +71,4 @@ icon-2point: "[gold]2 Point Selection"
 icon-show-claim: "[green]Show claim"
 icon-depth-off: "[green]Toggle depth On"
 icon-depth-on: "[red]Toggle depth Off"
+icon-apply: "[green]Apply"
