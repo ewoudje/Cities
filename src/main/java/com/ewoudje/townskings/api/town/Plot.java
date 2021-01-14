@@ -4,6 +4,8 @@ import com.ewoudje.townskings.api.world.BlockPosition;
 import de.tr7zw.nbtapi.NBTCompound;
 import de.tr7zw.nbtapi.NBTListCompound;
 
+import java.util.UUID;
+
 public interface Plot {
 
     PlotSettings getSettings();
@@ -14,5 +16,9 @@ public interface Plot {
 
     boolean isInfiniteDepth();
 
-    void save(NBTCompound compound);
+    UUID getUID();
+
+    double getPriority();
+
+    void dispose();
 }

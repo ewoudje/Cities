@@ -1,13 +1,19 @@
 package com.ewoudje.townskings.listeners;
 
 import com.ewoudje.townskings.api.TKPlugin;
+import com.ewoudje.townskings.api.town.Plot;
+import com.ewoudje.townskings.api.world.BlockPosition;
+import com.ewoudje.townskings.api.world.ChunkPosition;
 import com.ewoudje.townskings.api.wrappers.TKPlayer;
+import com.ewoudje.townskings.datastore.RedisChunk;
 import io.sentry.Sentry;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.*;
+
+import java.util.List;
 
 public class TKPlayerListener implements Listener {
 
@@ -77,8 +83,10 @@ public class TKPlayerListener implements Listener {
     @EventHandler
     public void onDestroy(BlockBreakEvent e) {
         try {
-            TKPlayer player = TKPlayer.wrap(e.getPlayer());
-            //TODO on block destroy
+            if (!e.isCancelled()) {
+                TKPlayer player = TKPlayer.wrap(e.getPlayer());
+                e.setCancelled(cancelBlockChange(new BlockPosition(e.getBlock()), player));
+            }
         } catch (Exception ex) {
             Sentry.captureException(ex);
             ex.printStackTrace();
@@ -88,12 +96,35 @@ public class TKPlayerListener implements Listener {
     @EventHandler
     public void onPlace(BlockPlaceEvent e) {
         try {
-            TKPlayer player = TKPlayer.wrap(e.getPlayer());
-            //TODO on block place
+            if (!e.isCancelled()) {
+                TKPlayer player = TKPlayer.wrap(e.getPlayer());
+                e.setCancelled(cancelBlockChange(new BlockPosition(e.getBlock()), player));
+            }
+
         } catch (Exception ex) {
             Sentry.captureException(ex);
             ex.printStackTrace();
         }
+    }
+
+    private boolean cancelBlockChange(BlockPosition pos, TKPlayer player) {
+        List<Plot> plots = new RedisChunk(pos.getChunkPos()).getPlots();
+
+        for (Plot p : plots) {
+            BlockPosition start = p.getStartPosition();
+            BlockPosition end = p.getEndPosition();
+
+            if (pos.getX() > start.getX() && pos.getX() < end.getX() &&
+                    pos.getZ() > start.getZ() && pos.getZ() < end.getZ()) {
+                if (p.isInfiniteDepth() || (
+                        pos.getY() > p.getStartPosition().getY() && pos.getY() < p.getEndPosition().getY()
+                )) {
+                    return !p.getSettings().getTown().equals(player.getTown());
+                }
+            }
+        }
+
+        return false;
     }
 
 

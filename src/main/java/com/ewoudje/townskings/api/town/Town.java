@@ -25,5 +25,7 @@ public interface Town {
 
     OfflinePlayer getOwner();
 
+    Set<Plot> getPlots();
+
     void disband();
 }

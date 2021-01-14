@@ -8,10 +8,13 @@ public interface PlotSettings {
 
     String getName();
 
-    PlotOwner getOwner();
+    //PlotOwner getOwner(); //TODO ownership system
 
     Town getTown();
 
-    UUID getId();
+    UUID getUID();
 
+    double getPriority();
+
+    void dispose();
 }

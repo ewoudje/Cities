@@ -30,21 +30,12 @@ public class ChunkPosition {
         return new ChunkPosition(position.getX() << 2, position.getZ() << 2);
     }
 
-    public TilePosition intoTilePos() {
-        return new TilePosition(getX() >> 2, getZ() >> 2);
-    }
-
     public int getX() {
         return x;
     }
 
     public int getZ() {
         return z;
-    }
-
-    public void save(NBTCompound c) {
-        c.setInteger("x", x);
-        c.setInteger("z", z);
     }
 
     @Override

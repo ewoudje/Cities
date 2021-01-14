@@ -1,12 +1,15 @@
 package com.ewoudje.townskings.user.mode;
 
 import com.ewoudje.townskings.api.PlotOwner;
+import com.ewoudje.townskings.api.town.Plot;
 import com.ewoudje.townskings.api.town.PlotSettings;
 import com.ewoudje.townskings.api.town.Town;
 import com.ewoudje.townskings.api.world.BlockPosition;
 import com.ewoudje.townskings.api.wrappers.TKBlock;
 import com.ewoudje.townskings.api.wrappers.TKItem;
 import com.ewoudje.townskings.api.wrappers.TKPlayer;
+import com.ewoudje.townskings.datastore.RedisPlot;
+import com.ewoudje.townskings.datastore.RedisPlotSettings;
 import com.ewoudje.townskings.item.InventoryDesigner;
 import com.ewoudje.townskings.item.ItemIcon;
 import com.ewoudje.townskings.item.ItemNone;
@@ -15,7 +18,7 @@ import com.ewoudje.townskings.api.mode.Mode;
 import com.ewoudje.townskings.mode.ModeHandler;
 import com.ewoudje.townskings.mode.ModeSetting;
 import com.ewoudje.townskings.mode.ModeStatus;
-import com.ewoudje.townskings.town.plot.TKPlot;
+import com.ewoudje.townskings.util.PlotApplier;
 import com.ewoudje.townskings.util.SendUtil;
 import com.ewoudje.townskings.world.HollowBlockChange;
 import me.wiefferink.interactivemessenger.processing.Message;
@@ -90,36 +93,14 @@ public class ClaimPlotMode implements Mode {
                 modeHandler.updateInventory(player);
                 break;
             case 8:
-                /*
-                if (player.getWorld().claimPlot(new TKPlot(start, end, depth, new PlotSettings() {
-                    @Override
-                    public String getName() {
-                        return "WOW";
-                    }
+                Plot plot = RedisPlot.createPlot(start, end,
+                        RedisPlotSettings.createPlotSettings("WOW", 10, player.getTown()), depth);
 
-                    @Override
-                    public PlotOwner getOwner() {
-                        return player.getTown();
-                    }
-
-                    @Override
-                    public Town getTown() {
-                        return player.getTown();
-                    }
-
-                    @Override
-                    public UUID getId() {
-                        return UUID.randomUUID();
-                    }
-                }))) {
-                    player.send(Message.fromKey("claimed-spot"));
-                    end = null;
-                    start = null;
-                    modeHandler.updateChunks(player);
-                } else {
-                    player.send(Message.fromKey("spot-taken"));
-                }*/
-                SendUtil.send(player, Message.fromKey("not-implemented"));
+                PlotApplier.applyPlot(plot);
+                start = null;
+                end = null;
+                modeHandler.updateChunks(player);
+                SendUtil.send(player, Message.fromKey("claimed-spot"));
                 break;
         }
     }

@@ -44,18 +44,8 @@ public class BlockPosition {
         return (short) ((x & 0xF) << 8 | (z & 0xF) << 4 | (y & 0xF));
     }
 
-    public TilePosition getTilePos() {
-        return new TilePosition(Tile.fromBlockPos(x), Tile.fromBlockPos(z));
-    }
-
     public ChunkPosition getChunkPos() {
         return new ChunkPosition(x >> 4, z >> 4);
-    }
-
-    public void save(NBTCompound compound) {
-        compound.setInteger("x", getX());
-        compound.setInteger("y", getY());
-        compound.setInteger("z", getZ());
     }
 
     @Override

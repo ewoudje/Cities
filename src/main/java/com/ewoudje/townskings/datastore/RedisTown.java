@@ -2,6 +2,8 @@ package com.ewoudje.townskings.datastore;
 
 import com.ewoudje.townskings.TK;
 import com.ewoudje.townskings.api.OfflinePlayer;
+import com.ewoudje.townskings.api.town.Plot;
+import com.ewoudje.townskings.api.town.PlotSettings;
 import com.ewoudje.townskings.api.town.Town;
 import com.ewoudje.townskings.api.wrappers.TKBlock;
 import com.ewoudje.townskings.api.wrappers.TKPlayer;
@@ -10,6 +12,7 @@ import com.ewoudje.townskings.util.UUIDUtil;
 import io.sentry.Sentry;
 import org.bukkit.Bukkit;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -67,6 +70,12 @@ public class RedisTown implements Town {
     }
 
     @Override
+    public Set<Plot> getPlots() {
+        return TK.REDIS.smembers("town:" + uuid.toString() + ":plots").stream()
+                .map(UUID::fromString).map(RedisPlot::new).collect(Collectors.toSet());
+    }
+
+    @Override
     public void disband() {
         UUIDUtil.fromString(TK.REDIS.hget("town:" + uuid.toString(), "founding-block")).map(RedisBlock::new)
                 .ifPresent(RedisBlock::destroy);
@@ -74,9 +83,16 @@ public class RedisTown implements Town {
         UUIDUtil.fromString(TK.REDIS.hget("town:" + uuid.toString(), "world")).map(RedisWorld::new)
                 .ifPresent(world -> world.removeTown(TK.REDIS.hget("town:" + uuid.toString(), "name")));
 
+        getPlots().forEach((p) -> {
+            PlotSettings settings = p.getSettings();
+            p.dispose();
+            settings.dispose();
+        });
+
         TK.REDIS.del("town:" + uuid.toString());
-        TK.REDIS.del("town:"  + uuid.toString() + ":members");
-        TK.REDIS.del("town:"  + uuid.toString() + ":invited");
+        TK.REDIS.del("town:" + uuid.toString() + ":members");
+        TK.REDIS.del("town:" + uuid.toString() + ":invited");
+        TK.REDIS.del("town:" + uuid.toString() + ":plots");
 
         Sentry.addBreadcrumb("Disbanded town!");
     }
@@ -89,6 +105,10 @@ public class RedisTown implements Town {
     @Override
     public void setOwner(OfflinePlayer player) {
         TK.REDIS.hset("town:" + uuid.toString(), "owner", player.getUniqueId().toString());
+    }
+
+    public void addPlot(Plot plot) {
+        TK.REDIS.sadd("town:" + uuid.toString() + ":plots", plot.getUID().toString());
     }
 
     public static Set<Town> getAllTowns() {
@@ -113,5 +133,18 @@ public class RedisTown implements Town {
         town.join(player);
 
         return town;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RedisTown redisTown = (RedisTown) o;
+        return Objects.equals(uuid, redisTown.uuid);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uuid);
     }
 }
