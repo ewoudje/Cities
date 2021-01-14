@@ -1,6 +1,7 @@
 package com.ewoudje.townskings.user.commands;
 
 import com.ewoudje.townskings.NonePlayer;
+import com.ewoudje.townskings.api.town.Demographic;
 import com.ewoudje.townskings.api.town.PlotSettings;
 import com.ewoudje.townskings.api.town.Town;
 import com.ewoudje.townskings.api.wrappers.TKPlayer;
@@ -128,10 +129,14 @@ public class TKCommands {
     @Command(name = "claim", aliases = {}, desc = "claim mode", usage = "")
     @Require("tk.user.claim")
     public void claim(@Sender @RequireTown TKPlayer s, PlotSettings settings) {
-        if (plugin.getModeHandler().get(s.getPlayer()) == null) {
-            plugin.getModeHandler().goInto(s, new ClaimPlotMode(settings));
+        if (Demographic.contains(settings.allowedManage(), s)) {
+            if (plugin.getModeHandler().get(s.getPlayer()) == null) {
+                plugin.getModeHandler().goInto(s, new ClaimPlotMode(settings));
+            } else {
+                plugin.getModeHandler().disable(s.getPlayer());
+            }
         } else {
-            plugin.getModeHandler().disable(s.getPlayer());
+            SendUtil.send(s, Message.fromKey("no-permission"));
         }
     }
 
