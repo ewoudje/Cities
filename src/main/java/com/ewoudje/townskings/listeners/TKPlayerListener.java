@@ -1,9 +1,9 @@
 package com.ewoudje.townskings.listeners;
 
 import com.ewoudje.townskings.api.TKPlugin;
+import com.ewoudje.townskings.api.town.Demographic;
 import com.ewoudje.townskings.api.town.Plot;
 import com.ewoudje.townskings.api.world.BlockPosition;
-import com.ewoudje.townskings.api.world.ChunkPosition;
 import com.ewoudje.townskings.api.wrappers.TKPlayer;
 import com.ewoudje.townskings.datastore.RedisChunk;
 import io.sentry.Sentry;
@@ -119,9 +119,7 @@ public class TKPlayerListener implements Listener {
                 if (p.isInfiniteDepth() || (
                         pos.getY() > p.getStartPosition().getY() && pos.getY() < p.getEndPosition().getY()
                 )) {
-                    return p.getSettings().allowedBuild().stream()
-                            .flatMap((f) -> f.getMembers().stream())
-                            .noneMatch(player.getOfflinePlayer()::equals);
+                    return Demographic.contains(p.getSettings().allowedBuild(), player);
                 }
             }
         }
