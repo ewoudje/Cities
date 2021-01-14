@@ -119,7 +119,9 @@ public class TKPlayerListener implements Listener {
                 if (p.isInfiniteDepth() || (
                         pos.getY() > p.getStartPosition().getY() && pos.getY() < p.getEndPosition().getY()
                 )) {
-                    return !p.getSettings().getTown().equals(player.getTown());
+                    return p.getSettings().allowedBuild().stream()
+                            .flatMap((f) -> f.getMembers().stream())
+                            .noneMatch(player.getOfflinePlayer()::equals);
                 }
             }
         }

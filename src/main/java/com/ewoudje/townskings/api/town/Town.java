@@ -21,11 +21,15 @@ public interface Town {
 
     UUID getUID();
 
-    void setOwner(OfflinePlayer offlinePlayer);
+    void setFounder(OfflinePlayer offlinePlayer);
 
-    OfflinePlayer getOwner();
+    OfflinePlayer getFounder();
 
     Set<Plot> getPlots();
 
+    Set<Demographic> getDemographics();
+
     void disband();
+
+    Set<PlotSettings> getPlotSettings();
 }

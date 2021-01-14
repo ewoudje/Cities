@@ -36,8 +36,9 @@ public class ClaimPlotMode implements Mode {
     private boolean wasSlot1;
     private BlockPosition start;
     private BlockPosition end;
+    private PlotSettings settings;
 
-    public ClaimPlotMode() {
+    public ClaimPlotMode(PlotSettings settings) {
         TKItem item = Items.createItem(null, ItemNone.class);
         for (int i = 36; i <= 44; i++)
             inventoryDesigner.set(i, item);
@@ -46,7 +47,10 @@ public class ClaimPlotMode implements Mode {
         inventoryDesigner.set(37, Items.createItem(null, ItemIcon.SHOW_CLAIM));
         inventoryDesigner.set(44, Items.createItem(null, ItemIcon.APPLY));
 
+        inventoryDesigner.set(42, Items.createItem(null, ItemIcon.EXIT));
+
         depth(true);
+        this.settings = settings;
     }
 
     private void toggleDepth() {
@@ -92,9 +96,11 @@ public class ClaimPlotMode implements Mode {
                 toggleDepth();
                 modeHandler.updateInventory(player);
                 break;
+            case 6:
+                modeHandler.disable(player.getPlayer());
+                break;
             case 8:
-                Plot plot = RedisPlot.createPlot(start, end,
-                        RedisPlotSettings.createPlotSettings("WOW", 10, player.getTown()), depth);
+                Plot plot = RedisPlot.createPlot(start, end, settings, depth);
 
                 PlotApplier.applyPlot(plot);
                 start = null;

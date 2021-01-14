@@ -2,6 +2,7 @@ package com.ewoudje.townskings.datastore;
 
 import com.ewoudje.townskings.TK;
 import com.ewoudje.townskings.api.OfflinePlayer;
+import com.ewoudje.townskings.api.town.Demographic;
 import com.ewoudje.townskings.api.town.Plot;
 import com.ewoudje.townskings.api.town.PlotSettings;
 import com.ewoudje.townskings.api.town.Town;
@@ -13,7 +14,6 @@ import io.sentry.Sentry;
 import org.bukkit.Bukkit;
 
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -61,18 +61,24 @@ public class RedisTown implements Town {
         ((RedisPlayer) player).setTown(null);
         Sentry.addBreadcrumb("Player left a town!");
 
-        if (player.is(getOwner())) this.disband();
+        if (player.is(getFounder())) this.disband();
     }
 
     @Override
-    public OfflinePlayer getOwner() {
-        return UUIDUtil.fromString(TK.REDIS.hget("town:" + uuid.toString(), "owner")).map(OfflinePlayer::getFromUUID).get();
+    public OfflinePlayer getFounder() {
+        return UUIDUtil.fromString(TK.REDIS.hget("town:" + uuid.toString(), "founder")).map(OfflinePlayer::getFromUUID).get();
     }
 
     @Override
     public Set<Plot> getPlots() {
         return TK.REDIS.smembers("town:" + uuid.toString() + ":plots").stream()
                 .map(UUID::fromString).map(RedisPlot::new).collect(Collectors.toSet());
+    }
+
+    @Override
+    public Set<Demographic> getDemographics() {
+        return TK.REDIS.hgetAll("town:" + uuid.toString() + ":demos").values()
+                .stream().map(UUID::fromString).map(RedisDemographic::new).collect(Collectors.toSet());
     }
 
     @Override
@@ -83,18 +89,24 @@ public class RedisTown implements Town {
         UUIDUtil.fromString(TK.REDIS.hget("town:" + uuid.toString(), "world")).map(RedisWorld::new)
                 .ifPresent(world -> world.removeTown(TK.REDIS.hget("town:" + uuid.toString(), "name")));
 
-        getPlots().forEach((p) -> {
-            PlotSettings settings = p.getSettings();
-            p.dispose();
-            settings.dispose();
-        });
+        getPlots().forEach(Plot::dispose);
+        getPlotSettings().forEach(PlotSettings::dispose);
+        getDemographics().forEach(Demographic::dispose);
 
         TK.REDIS.del("town:" + uuid.toString());
         TK.REDIS.del("town:" + uuid.toString() + ":members");
         TK.REDIS.del("town:" + uuid.toString() + ":invited");
         TK.REDIS.del("town:" + uuid.toString() + ":plots");
+        TK.REDIS.del("town:" + uuid.toString() + ":plotsettings");
+        TK.REDIS.del("town:" + uuid.toString() + ":demos");
 
         Sentry.addBreadcrumb("Disbanded town!");
+    }
+
+    @Override
+    public Set<PlotSettings> getPlotSettings() {
+        return TK.REDIS.hgetAll("town:" + uuid.toString() + ":plotsettings").values().stream()
+                .map(UUID::fromString).map(RedisPlotSettings::new).collect(Collectors.toSet());
     }
 
     @Override
@@ -103,17 +115,25 @@ public class RedisTown implements Town {
     }
 
     @Override
-    public void setOwner(OfflinePlayer player) {
-        TK.REDIS.hset("town:" + uuid.toString(), "owner", player.getUniqueId().toString());
+    public void setFounder(OfflinePlayer player) {
+        TK.REDIS.hset("town:" + uuid.toString(), "founder", player.getUniqueId().toString());
     }
 
     public void addPlot(Plot plot) {
         TK.REDIS.sadd("town:" + uuid.toString() + ":plots", plot.getUID().toString());
     }
 
+    public void addPlotSettings(PlotSettings settings) {
+        TK.REDIS.hset("town:" + uuid.toString() + ":plotsettings", settings.getName(), settings.getUID().toString());
+    }
+
+    private void addDemographic(Demographic demo) {
+        TK.REDIS.hset("town:" + uuid.toString() + ":demos", demo.getName(), demo.getUID().toString());
+    }
+
     public static Set<Town> getAllTowns() {
         return Bukkit.getWorlds().stream()
-                .flatMap((w) -> TK.REDIS.hgetAll("world:" + w.getUID().toString() + ":towns").keySet().stream())
+                .flatMap((w) -> TK.REDIS.hgetAll("world:" + w.getUID().toString() + ":towns").values().stream())
                 .map((s) -> new RedisTown(UUID.fromString(s))).collect(Collectors.toSet());
     }
 
@@ -123,13 +143,24 @@ public class RedisTown implements Town {
         TK.REDIS.hset("town:" + uuid.toString(), "name", name);
         TK.REDIS.hset("town:" + uuid.toString(), "world", world.getUID().toString());
         TK.REDIS.hset("town:" + uuid.toString(), "founding-block", founding.getUID().toString());
-        TK.REDIS.hset("town:" + uuid.toString(), "owner", player.getUID().toString());
+        TK.REDIS.hset("town:" + uuid.toString(), "founder", player.getUID().toString());
 
         Sentry.addBreadcrumb("Player created a town!");
 
         ((RedisWorld) world).addTown(name, uuid);
 
-        Town town = new RedisTown(uuid);
+        RedisTown town = new RedisTown(uuid);
+
+        Demographic mayor = RedisDemographic.createDemographic("mayor", town);
+        mayor.addMember(player);
+        town.addDemographic(mayor);
+
+        Demographic def = RedisDemographic.createDemographic("default", town);
+        town.addDemographic(def);
+
+        town.addPlotSettings(RedisPlotSettings.createPlotSettings("default", 10000,
+                town, Set.of(def), Set.of(mayor)));
+
         town.join(player);
 
         return town;

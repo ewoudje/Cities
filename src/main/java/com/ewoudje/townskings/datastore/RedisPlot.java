@@ -4,6 +4,7 @@ import com.ewoudje.townskings.TK;
 import com.ewoudje.townskings.api.town.Plot;
 import com.ewoudje.townskings.api.town.PlotSettings;
 import com.ewoudje.townskings.api.world.BlockPosition;
+import com.ewoudje.townskings.util.PlotApplier;
 import com.ewoudje.townskings.util.UUIDUtil;
 
 import java.util.UUID;
@@ -57,10 +58,11 @@ public class RedisPlot implements Plot {
 
     @Override
     public void dispose() {
+        PlotApplier.removePlot(this);
         TK.REDIS.del("plot:" + uuid.toString());
     }
 
-    public static RedisPlot createPlot(BlockPosition start, BlockPosition end, RedisPlotSettings settings, boolean depth) {
+    public static RedisPlot createPlot(BlockPosition start, BlockPosition end, PlotSettings settings, boolean depth) {
         UUID uuid = UUID.randomUUID();
 
         int xS = Math.min(start.getX(), end.getX());

@@ -9,4 +9,6 @@ public interface TKChunk {
     void addPlot(Plot plot);
 
     List<Plot> getPlots();
+
+    void removePlot(Plot plot);
 }

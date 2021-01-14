@@ -2,10 +2,7 @@ package com.ewoudje.townskings;
 
 import com.ewoudje.townskings.api.TKPlugin;
 import com.ewoudje.townskings.block.Blocks;
-import com.ewoudje.townskings.user.commands.TKCommands;
-import com.ewoudje.townskings.user.commands.TKPlayerProvider;
-import com.ewoudje.townskings.user.commands.TKPlayerSenderProvider;
-import com.ewoudje.townskings.user.commands.TownProvider;
+import com.ewoudje.townskings.user.commands.*;
 import com.ewoudje.townskings.item.Items;
 import com.ewoudje.townskings.item.RecipesHandler;
 import com.ewoudje.townskings.listeners.TKBlockListener;
@@ -54,6 +51,7 @@ public final class TK extends JavaPlugin implements TKPlugin {
             new TKPlayerSenderProvider(this).bind(drink);
             new TKPlayerProvider(this).bind(drink);
             new TownProvider(this).bind(drink);
+            new PlotSettingsProvider().bind(drink);
 
             drink.register(new TKCommands(this), "tk", "townskings");
 

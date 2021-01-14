@@ -29,4 +29,9 @@ public class RedisChunk implements TKChunk {
                 .map(RedisPlot::new)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public void removePlot(Plot plot) {
+        TK.REDIS.zrem("chunk:" + position.getX() + ":" + position.getZ() + ":claims", plot.getUID().toString());
+    }
 }
