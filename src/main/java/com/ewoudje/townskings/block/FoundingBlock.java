@@ -8,6 +8,9 @@ import com.ewoudje.townskings.api.wrappers.TKBlock;
 import com.ewoudje.townskings.api.wrappers.TKItem;
 import com.ewoudje.townskings.api.wrappers.TKPlayer;
 import com.ewoudje.townskings.api.wrappers.TKWorld;
+import com.ewoudje.townskings.datastore.RedisBlock;
+import com.ewoudje.townskings.datastore.RedisTown;
+import com.ewoudje.townskings.util.SendUtil;
 import de.tr7zw.nbtapi.NBTCompound;
 import me.wiefferink.interactivemessenger.processing.Message;
 import org.bukkit.Material;
@@ -28,31 +31,38 @@ public class FoundingBlock implements ItemType, BlockType {
         NBTCompound compound = item.getNBT();
 
         if (player.getTown() != null) {
-            player.send(Message.fromKey("already-in-town").replacements(player.getTown().getName()));
+            SendUtil.send(player, Message.fromKey("already-in-town").replacements(player.getTown().getName()));
             return false;
         }
 
         if (!compound.getBoolean("ready")) {
-            player.send(Message.fromKey("founding-not-ready"));
+            SendUtil.send(player, Message.fromKey("founding-not-ready"));
             return false;
         }
 
-        if (world.getTKPlugin().stream().flatMap((p) -> p.getClaimPoints().stream())
-                     .anyMatch((l) -> b.getBlock().getLocation().distanceSquared(l) < minDistance)) {
-            player.send(Message.fromKey("too-close-town"));
+
+        //TODO SPATIAL
+        if (false) { //world.getTowns().stream().flatMap((p) -> p.getClaimPoints().stream())
+                     //.anyMatch((l) -> b.getBlock().getLocation().distanceSquared(l) < minDistance)) {
+            SendUtil.send(player, Message.fromKey("too-close-town"));
             return false;
         }
 
         String name = compound.getString("town-name");
 
-        TKBlock fBlock = world.createBlock(b, this.getClass());
+        if (player.getWorld().getTown(name).isPresent()) {
+            SendUtil.send(player, Message.fromKey("town-exists").replacements(name));
+            return false;
+        }
 
-        world.createTown(name, player, fBlock);
+        TKBlock fBlock = RedisBlock.createBlock(b, this.getClass());
 
-        world.broadcast(Message.fromKey("broadcast-create-town")
+        RedisTown.create(name, player, fBlock, world);
+
+        SendUtil.broadcast(Message.fromKey("broadcast-create-town")
                 .replacements(player.getPlayer().getName(), name));
 
-        player.send(Message.fromKey("create-town").replacements(name));
+        SendUtil.send(player, Message.fromKey("create-town").replacements(name));
 
         return true;
     }

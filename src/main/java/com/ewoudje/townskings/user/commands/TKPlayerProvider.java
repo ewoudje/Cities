@@ -5,6 +5,7 @@ import com.ewoudje.townskings.api.wrappers.TKPlayer;
 import com.jonahseguin.drink.CommandService;
 import com.jonahseguin.drink.argument.CommandArg;
 import com.jonahseguin.drink.parametric.DrinkProvider;
+import org.bukkit.entity.Player;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -42,7 +43,8 @@ public class TKPlayerProvider extends DrinkProvider<TKPlayer> {
         if (name.equals("null") && annotations.stream().anyMatch((p) -> p.annotationType().equals(Noneable.class)))
             return null;
 
-        TKPlayer p = plugin.getPlayer(plugin.getServer().getPlayer(name));
+        Player pla = plugin.getServer().getPlayer(name);
+        TKPlayer p = TKPlayer.wrap(pla);
         if (p != null) {
             return p;
         }

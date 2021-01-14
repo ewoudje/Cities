@@ -6,12 +6,12 @@ import com.ewoudje.townskings.api.world.ChunkPosition;
 import com.ewoudje.townskings.api.world.Tile;
 import com.ewoudje.townskings.api.world.TilePosition;
 import com.ewoudje.townskings.api.wrappers.TKWorld;
-import org.bukkit.Bukkit;
 
 import java.util.Map;
 
 public class Plotter {
 
+    /*
     public static boolean claim(Plot plot, TKWorld world, final Map<TilePosition, Tile> tiles) {
         BlockPosition start = plot.getStartPosition();
         BlockPosition end = plot.getEndPosition();
@@ -43,5 +43,6 @@ public class Plotter {
 
         return true;
     }
+    */
 
 }

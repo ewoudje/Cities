@@ -20,10 +20,10 @@ public class TKBlockListener implements Listener {
     public void onBreak(BlockBreakEvent e) {
         try {
             if (!e.isCancelled()) {
-                TKBlock block = plugin.getBlock(e.getBlock());
-                if (block == null || block.getType() == null) return;
+                TKBlock block = TKBlock.wrap(e.getBlock());
+                if (block.getType() == null) return;
 
-                TKPlayer player = plugin.getPlayer(e.getPlayer());
+                TKPlayer player = TKPlayer.wrap(e.getPlayer());
 
                 if (!block.getType().onBreak(player.getWorld(), player, block)) {
                     e.setCancelled(true);
@@ -31,6 +31,7 @@ public class TKBlockListener implements Listener {
             }
         } catch (Exception ex) {
             Sentry.captureException(ex);
+            ex.printStackTrace();
         }
     }
 }

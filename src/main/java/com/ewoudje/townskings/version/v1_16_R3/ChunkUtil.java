@@ -5,8 +5,6 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.BlockPosition;
 import com.ewoudje.townskings.api.world.ChunkChange;
 import com.ewoudje.townskings.api.wrappers.TKPlayer;
-import com.ewoudje.townskings.api.wrappers.TKWorld;
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.Chunk;
@@ -14,7 +12,6 @@ import org.bukkit.craftbukkit.v1_16_R3.CraftChunk;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 
 import java.lang.reflect.Field;
-import java.nio.ByteBuffer;
 
 public class ChunkUtil {
 

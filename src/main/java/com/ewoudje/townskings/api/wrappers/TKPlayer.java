@@ -5,10 +5,14 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
+import com.ewoudje.townskings.TK;
 import com.ewoudje.townskings.api.OfflinePlayer;
-import com.ewoudje.townskings.api.world.BlockPosition;
-import com.ewoudje.townskings.town.Town;
-import com.ewoudje.townskings.world.DynamicTKTile;
+import com.ewoudje.townskings.api.wrappers.TKWorld;
+import com.ewoudje.townskings.datastore.RedisOfflinePlayer;
+import com.ewoudje.townskings.datastore.RedisPlayer;
+import com.ewoudje.townskings.datastore.RedisTown;
+import com.ewoudje.townskings.datastore.RedisWorld;
+import com.ewoudje.townskings.api.town.Town;
 import me.wiefferink.interactivemessenger.generators.TellrawGenerator;
 import me.wiefferink.interactivemessenger.parsers.YamlParser;
 import me.wiefferink.interactivemessenger.processing.Message;
@@ -17,101 +21,29 @@ import org.bukkit.entity.Player;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
-public class TKPlayer {
-    private final Player player;
-    private TKWorld world;
-    private Town town;
-    private Town visitTown;
-    private DynamicTKTile tile;
+public interface TKPlayer {
 
-    public TKPlayer(@Nonnull Player player, @Nonnull TKWorld world) {
-        this.player = player;
-        this.world = world;
-        this.tile = new DynamicTKTile();
-        this.tile.setPos(new BlockPosition(player.getLocation()).getChunkPos(), world);
-
-        town = world.getTKPlugin().stream().filter((c) -> c.contains(getOfflinePlayer())).findAny()
-                .orElse(null);
-    }
-
-    public void setTown(@Nullable Town town) {
-        this.town = town;
+    static TKPlayer wrap(Player player) {
+        return RedisPlayer.read(player); //TODO hmm?
     }
 
     @Nullable
-    public Town getTown() {
-        return town;
-    }
+    Town getTown();
 
     @Nonnull
-    public Player getPlayer() {
-        return player;
-    }
+    Player getPlayer();
 
     @Nonnull
-    public TKWorld getWorld() {
-        return world;
-    }
-
-    public void setWorld(@Nonnull TKWorld world) {
-        this.world = world;
-    }
+    TKWorld getWorld();
 
     @Nonnull
-    public OfflinePlayer getOfflinePlayer() {
-        return OfflinePlayer.fromPlayer(player);
-    }
+    OfflinePlayer getOfflinePlayer();
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null) return false;
+    UUID getUID();
 
-        OfflinePlayer that;
-
-        if (getClass() == o.getClass()) {
-            that = ((TKPlayer) o).getOfflinePlayer();
-        } else if (OfflinePlayer.class == o.getClass()) {
-            that = (OfflinePlayer) o;
-        } else return false;
-
-        return Objects.equals(getOfflinePlayer(), that);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(player);
-    }
-
-    public void send(Message mes) {
-        mes.send(getPlayer());
-    }
-
-    public void setVisitTown(Town town) {
-        this.visitTown = town;
-    }
-
-    public Town getVisitTown() {
-        return visitTown;
-    }
-
-    public void actionBar(Message message) {
-        PacketContainer container = new PacketContainer(PacketType.Play.Server.TITLE);
-        container.getTitleActions().write(0, EnumWrappers.TitleAction.ACTIONBAR);
-        container.getChatComponents().write(0,
-                WrappedChatComponent.fromJson(String.join("",
-                        TellrawGenerator.generate(YamlParser.parse(message.doReplacements().getRaw())))));
-
-        try {
-            ProtocolLibrary.getProtocolManager().sendServerPacket(player, container);
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public DynamicTKTile getFollowTile() {
-        return tile;
-    }
+    boolean is(OfflinePlayer player);
 }

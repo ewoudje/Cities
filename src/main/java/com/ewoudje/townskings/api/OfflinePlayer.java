@@ -1,21 +1,17 @@
 package com.ewoudje.townskings.api;
 
-import com.ewoudje.townskings.BaseOfflinePlayer;
 import com.ewoudje.townskings.NonePlayer;
-import de.tr7zw.nbtapi.NBTCompound;
+import com.ewoudje.townskings.datastore.RedisOfflinePlayer;
 import org.bukkit.entity.AnimalTamer;
-import org.bukkit.entity.Player;
+
+import java.util.UUID;
 
 public interface OfflinePlayer extends AnimalTamer {
 
-    void save(NBTCompound c);
+    static OfflinePlayer getFromUUID(UUID uuid) {
+        if (NonePlayer.is(uuid)) return new NonePlayer();
 
-    static OfflinePlayer fromPlayer(Player p) {
-        return new BaseOfflinePlayer(p.getUniqueId(), p.getName());
+        return new RedisOfflinePlayer(uuid);
     }
 
-    static OfflinePlayer fromCompound(NBTCompound c) {
-        if (NonePlayer.is(c.getUUID("id"))) return new NonePlayer();
-        return new BaseOfflinePlayer(c);
-    }
 }

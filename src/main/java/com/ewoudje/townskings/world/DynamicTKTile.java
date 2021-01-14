@@ -25,12 +25,12 @@ public class DynamicTKTile implements Tile {
     }
 
     private void update(TKWorld world) {
-        for (int y = 0; y < 4; y++) {
+        /*for (int y = 0; y < 4; y++) {
             for (int x = 0; x < 4; x++) {
                 chunks[y * Tile.CHUNKS_SIZE + x] =
                         world.getChunk(new ChunkPosition(pos.getX() + x, pos.getZ() + y));
             }
-        }
+        }*/
 
         plots.update();
     }

@@ -1,35 +1,26 @@
 package com.ewoudje.townskings;
 
 import com.ewoudje.townskings.api.TKPlugin;
-import com.ewoudje.townskings.api.wrappers.TKBlock;
-import com.ewoudje.townskings.api.wrappers.TKItem;
-import com.ewoudje.townskings.api.wrappers.TKPlayer;
-import com.ewoudje.townskings.api.wrappers.TKWorld;
 import com.ewoudje.townskings.block.Blocks;
 import com.ewoudje.townskings.user.commands.TKCommands;
 import com.ewoudje.townskings.user.commands.TKPlayerProvider;
 import com.ewoudje.townskings.user.commands.TKPlayerSenderProvider;
-import com.ewoudje.townskings.user.commands.TKProvider;
-import com.ewoudje.townskings.api.item.ItemType;
+import com.ewoudje.townskings.user.commands.TownProvider;
 import com.ewoudje.townskings.item.Items;
 import com.ewoudje.townskings.item.RecipesHandler;
 import com.ewoudje.townskings.listeners.TKBlockListener;
 import com.ewoudje.townskings.listeners.TKItemListener;
 import com.ewoudje.townskings.listeners.TKPlayerListener;
 import com.ewoudje.townskings.mode.ModeHandler;
-import com.google.gson.Gson;
 import com.jonahseguin.drink.CommandService;
 import com.jonahseguin.drink.Drink;
-import de.tr7zw.nbtapi.NBTItem;
 import io.sentry.Sentry;
 import me.wiefferink.interactivemessenger.source.LanguageManager;
-import org.bukkit.World;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -37,18 +28,19 @@ public final class TK extends JavaPlugin implements TKPlugin {
 
     private CommandService drink;
     private LanguageManager languageManager;
-    private Gson gson;
     private RecipesHandler recipesHandler;
     private ModeHandler modeHandler;
-
-    private HashMap<World, TKWorld> worlds = new HashMap<>();
-    private HashMap<Player, TKPlayer> players = new HashMap<>();
-    private HashMap<String, ItemType> items = new HashMap<>();
+    public static Jedis REDIS;
+    private static JedisPool pool;
 
     @Override
     public void onEnable() {
         try {
-            gson = new Gson();
+             pool = new JedisPool(new JedisPoolConfig(),
+                    getConfig().getString("redis-host"), getConfig().getInt("redis-port", 7379), 1000,
+                    getConfig().getString("redis-pass"));
+            REDIS = pool.getResource();
+
 
             drink = Drink.get(this);
             languageManager = new LanguageManager(
@@ -61,27 +53,23 @@ public final class TK extends JavaPlugin implements TKPlugin {
 
             new TKPlayerSenderProvider(this).bind(drink);
             new TKPlayerProvider(this).bind(drink);
-            new TKProvider(this).bind(drink);
+            new TownProvider(this).bind(drink);
 
             drink.register(new TKCommands(this), "tk", "townskings");
 
             drink.registerCommands();
 
             Blocks.register(this, new HashMap<>());
-            Items.register(this, items);
+            Items.register(this, new HashMap<>());
             recipesHandler = new RecipesHandler(this);
             modeHandler = new ModeHandler(this);
 
-            getServer().getPluginManager().registerEvents(new TKPlayerListener(this, players), this);
+            getServer().getPluginManager().registerEvents(new TKPlayerListener(this), this);
             getServer().getPluginManager().registerEvents(new TKItemListener(this), this);
             getServer().getPluginManager().registerEvents(new TKBlockListener(this), this);
-
-            getServer().getWorlds().forEach((w) -> worlds.put(w, new TKWorld(w, this)));
-            getServer().getOnlinePlayers().forEach((p) -> players.put(p, new TKPlayer(p, getWorld(p.getWorld()))));
-
-            getServer().getScheduler().runTaskTimerAsynchronously(this, this::save, 200, getConfig().getInt("save-interval"));
         } catch (Exception e) {
             Sentry.captureException(e);
+            e.printStackTrace();
         }
     }
 
@@ -91,49 +79,17 @@ public final class TK extends JavaPlugin implements TKPlugin {
         try {
             recipesHandler.removeRecipes();
             modeHandler.disable();
-            save();
+            REDIS.close();
+            pool.close();
         } catch (Exception e) {
             Sentry.captureException(e);
+            e.printStackTrace();
         }
     }
 
     public String getVersion() {
         return getConfig().getString("version");
     }
-
-    private void save() {
-        worlds.forEach((w, ww) -> ww.save());
-    }
-
-    public TKWorld getWorld(World world) {
-        return worlds.get(world);
-    }
-
-    public Collection<TKWorld> getWorlds() {
-        return worlds.values();
-    }
-
-    public TKPlayer getPlayer(Player player) {
-        return players.get(player);
-    }
-
-    public TKBlock getBlock(Block block) {
-        return getWorld(block.getWorld()).getBlock(block);
-    }
-
-    public TKItem getItem(ItemStack item) {
-        if (item.getAmount() == 0) return null;
-        NBTItem nbt = new NBTItem(item);
-        if (nbt.getCompound("town-item") == null) return null;
-        ItemType type = items.get(nbt.getCompound("town-item").getString("type"));
-        if (type == null) return null;
-        return new TKItem(item, type);
-    }
-
-    public Gson getGson() {
-        return gson;
-    }
-
 
     public ModeHandler getModeHandler() {
         return modeHandler;

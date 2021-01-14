@@ -1,12 +1,8 @@
 package com.ewoudje.townskings.world;
 
 import com.ewoudje.townskings.api.world.BlockPosition;
-import com.ewoudje.townskings.api.world.ChangeBlockList;
-import com.ewoudje.townskings.api.world.ChunkChange;
 import com.ewoudje.townskings.api.wrappers.TKWorld;
 import org.bukkit.Material;
-
-import java.util.List;
 
 public class HollowBlockChange extends PerBlockChange {
 

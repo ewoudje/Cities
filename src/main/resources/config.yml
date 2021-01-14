@@ -1,6 +1,9 @@
 languages: EN
 version: ${project.version}
 
-save-interval: 50
+redis-host: "localhost"
+redis-port: 7379
+redis-pass: idk
+
 claim-size: 50
 minimum-distance-towns: 150

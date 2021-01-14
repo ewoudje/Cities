@@ -1,6 +1,7 @@
 package com.ewoudje.townskings.mode;
 
 import com.ewoudje.townskings.api.wrappers.TKPlayer;
+import com.ewoudje.townskings.util.SendUtil;
 import me.wiefferink.interactivemessenger.processing.Message;
 
 public class ModeStatus {
@@ -17,6 +18,6 @@ public class ModeStatus {
 
     public void send(TKPlayer player) {
         if (actionbar != null)
-            player.actionBar(actionbar);
+            SendUtil.showActionBar(player, actionbar);
     }
 }

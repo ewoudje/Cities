@@ -3,8 +3,8 @@ package com.ewoudje.townskings.item;
 import com.ewoudje.townskings.api.wrappers.TKBlock;
 import com.ewoudje.townskings.api.wrappers.TKItem;
 import com.ewoudje.townskings.api.wrappers.TKPlayer;
-import com.ewoudje.townskings.api.wrappers.TKWorld;
 import com.ewoudje.townskings.api.item.ItemType;
+import com.ewoudje.townskings.api.wrappers.TKWorld;
 import org.bukkit.Material;
 
 import javax.annotation.Nullable;

@@ -1,57 +1,50 @@
 package com.ewoudje.townskings.listeners;
 
 import com.ewoudje.townskings.api.TKPlugin;
-import com.ewoudje.townskings.api.world.BlockPosition;
 import com.ewoudje.townskings.api.wrappers.TKPlayer;
-import com.ewoudje.townskings.api.wrappers.TKWorld;
-import com.ewoudje.townskings.town.Town;
 import io.sentry.Sentry;
-import me.wiefferink.interactivemessenger.processing.Message;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.*;
 
-import java.util.Map;
-import java.util.Optional;
-
 public class TKPlayerListener implements Listener {
 
     private final TKPlugin plugin;
-    private final Map<Player, TKPlayer> playerMap;
-    private final float claimSize2;
+    private final double claimSize;
 
-    public TKPlayerListener(TKPlugin plugin, Map<Player, TKPlayer> playerMap) {
+    public TKPlayerListener(TKPlugin plugin) {
         this.plugin = plugin;
-        this.playerMap = playerMap;
-        float tmp = (float) plugin.getConfig().getDouble("claim-size");
-        claimSize2 = tmp * tmp;
+        claimSize = plugin.getConfig().getDouble("claim-size");
     }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent joinEvent) {
         try {
-            playerMap.put(joinEvent.getPlayer(),
-                    new TKPlayer(joinEvent.getPlayer(), plugin.getWorld(joinEvent.getPlayer().getWorld())));
+            //playerMap.put(joinEvent.getPlayer(),
+            //        new TKPlayer(joinEvent.getPlayer(), plugin.getWorld(joinEvent.getPlayer().getWorld())));
         } catch (Exception ex) {
             Sentry.captureException(ex);
+            ex.printStackTrace();
         }
     }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent quitEvent) {
         try {
-            playerMap.remove(quitEvent.getPlayer());
+            //playerMap.remove(quitEvent.getPlayer());
         } catch (Exception ex) {
             Sentry.captureException(ex);
+            ex.printStackTrace();
         }
     }
 
     @EventHandler
     public void onMove(PlayerMoveEvent e) {
+        /*
+
+
         TKPlayer player = plugin.getPlayer(e.getPlayer());
         Town had = player.getVisitTown();
 
@@ -67,14 +60,16 @@ public class TKPlayerListener implements Listener {
                     .replacements(player.getPlayer().getName(), player.getVisitTown().getName()));
 
         player.getFollowTile().setPos(new BlockPosition(player.getPlayer().getLocation()).getChunkPos(), player.getWorld());
+        */
     }
 
     @EventHandler
     public void onWorldSwitch(PlayerChangedWorldEvent e) {
         try {
-            plugin.getPlayer(e.getPlayer()).setWorld(plugin.getWorld(e.getPlayer().getWorld()));
+            //plugin.getPlayer(e.getPlayer()).setWorld(plugin.getWorld(e.getPlayer().getWorld()));
         } catch (Exception ex) {
             Sentry.captureException(ex);
+            ex.printStackTrace();
         }
     }
 
@@ -82,51 +77,23 @@ public class TKPlayerListener implements Listener {
     @EventHandler
     public void onDestroy(BlockBreakEvent e) {
         try {
-            TKPlayer player = plugin.getPlayer(e.getPlayer());
-
-            Optional<Town> town = inTown(player.getWorld(), e.getBlock().getLocation());
-
-            if (town.isPresent() && !town.get().equals(player.getTown()))
-                e.setCancelled(true);
-
-            if (player.getWorld().getPlotAt(new BlockPosition(e.getBlock())) != null) {
-                e.setCancelled(true);
-            }
+            TKPlayer player = TKPlayer.wrap(e.getPlayer());
+            //TODO on block destroy
         } catch (Exception ex) {
             Sentry.captureException(ex);
+            ex.printStackTrace();
         }
     }
 
     @EventHandler
     public void onPlace(BlockPlaceEvent e) {
         try {
-            TKPlayer player = plugin.getPlayer(e.getPlayer());
-
-            Optional<Town> town = inTown(player.getWorld(), e.getBlock().getLocation());
-
-            if (town.isPresent() && !town.get().equals(player.getTown()))
-                e.setCancelled(true);
+            TKPlayer player = TKPlayer.wrap(e.getPlayer());
+            //TODO on block place
         } catch (Exception ex) {
             Sentry.captureException(ex);
+            ex.printStackTrace();
         }
-    }
-
-    private Optional<Town> inTown(TKWorld world, Location loc) {
-        if (!world.getWorld().equals(loc.getWorld()))
-            return Optional.empty();
-
-        Location l = loc.clone();
-        l.setY(0);
-        return world.getTKPlugin().stream()
-                .filter((c) -> c.getClaimPoints()
-                        .stream().anyMatch((p) -> {
-                            Location p2 = p.clone();
-
-                            p2.setY(0);
-
-                            return l.distanceSquared(p2) < claimSize2;
-                        }))
-                .findAny();
     }
 
 

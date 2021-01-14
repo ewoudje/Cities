@@ -2,8 +2,8 @@ package com.ewoudje.townskings.block;
 
 import com.ewoudje.townskings.api.TKPlugin;
 import com.ewoudje.townskings.api.wrappers.TKBlock;
-import com.ewoudje.townskings.api.wrappers.TKWorld;
 import com.ewoudje.townskings.api.block.BlockType;
+import com.ewoudje.townskings.api.wrappers.TKWorld;
 import org.bukkit.block.Block;
 
 import java.util.Collection;
@@ -35,10 +35,8 @@ public class Blocks {
         return blocksByName.get(s);
     }
 
-    public static TKBlock createBlock(TKWorld world, Block block, Class<? extends FoundingBlock> clazz) {
-        BlockType type = blocksByClass.get(clazz);
-        if (type == null) return new TKBlock(world, block, null, null, UUID.randomUUID());
-        return new TKBlock(world, block, type, type.createBlockData(), UUID.randomUUID());
+    public static BlockType getBlockType(Class<? extends BlockType> c) {
+        return blocksByClass.get(c);
     }
 
     public static Collection<BlockType> getTypes() {

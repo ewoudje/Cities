@@ -1,8 +1,10 @@
 package com.ewoudje.townskings.listeners;
 
 import com.ewoudje.townskings.api.TKPlugin;
+import com.ewoudje.townskings.api.wrappers.TKBlock;
 import com.ewoudje.townskings.api.wrappers.TKPlayer;
 import com.ewoudje.townskings.api.wrappers.TKItem;
+import com.ewoudje.townskings.item.Items;
 import io.sentry.Sentry;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,17 +22,18 @@ public class TKItemListener implements Listener {
     public void onPlace(BlockPlaceEvent e) {
         try {
             if (e.canBuild()) {
-                TKItem item = plugin.getItem(e.getItemInHand());
+                TKItem item = Items.getItem(e.getItemInHand());
                 if (item == null) return;
 
-                TKPlayer player = plugin.getPlayer(e.getPlayer());
+                TKPlayer player = TKPlayer.wrap(e.getPlayer());
 
-                if (!item.getType().onBuild(player.getWorld(), player, item, player.getWorld().getBlock(e.getBlockPlaced()))) {
+                if (!item.getType().onBuild(player.getWorld(), player, item, TKBlock.wrap(e.getBlockPlaced()))) {
                     e.setBuild(false);
                 }
             }
         } catch (Exception ex) {
             Sentry.captureException(ex);
+            ex.printStackTrace();
         }
     }
 

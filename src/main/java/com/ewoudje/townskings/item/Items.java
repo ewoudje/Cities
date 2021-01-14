@@ -2,10 +2,11 @@ package com.ewoudje.townskings.item;
 
 import com.ewoudje.townskings.api.TKPlugin;
 import com.ewoudje.townskings.api.wrappers.TKItem;
-import com.ewoudje.townskings.api.wrappers.TKWorld;
 import com.ewoudje.townskings.api.block.BlockType;
 import com.ewoudje.townskings.api.item.ItemType;
+import com.ewoudje.townskings.api.wrappers.TKWorld;
 import com.ewoudje.townskings.block.Blocks;
+import de.tr7zw.nbtapi.NBTItem;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -77,5 +78,14 @@ public class Items {
 
         t.create(world, item);
         return item;
+    }
+
+    public static TKItem getItem(ItemStack item) {
+        if (item.getAmount() == 0) return null;
+        NBTItem nbt = new NBTItem(item);
+        if (nbt.getCompound("town-item") == null) return null;
+        ItemType type = itemsByName.get(nbt.getCompound("town-item").getString("type"));
+        if (type == null) return null;
+        return new TKItem(item, type);
     }
 }

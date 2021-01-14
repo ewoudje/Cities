@@ -1,6 +1,7 @@
 package com.ewoudje.townskings.api.world;
 
 import de.tr7zw.nbtapi.NBTCompound;
+import org.bukkit.Chunk;
 
 import java.util.Objects;
 
@@ -11,6 +12,10 @@ public class ChunkPosition {
     public ChunkPosition(int x, int z) {
         this.x = x;
         this.z = z;
+    }
+
+    public ChunkPosition(Chunk c) {
+        this(c.getX(), c.getZ());
     }
 
     public ChunkPosition(NBTCompound c) {

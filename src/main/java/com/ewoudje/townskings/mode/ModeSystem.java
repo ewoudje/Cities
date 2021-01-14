@@ -156,7 +156,7 @@ public class ModeSystem {
 
         if (result == null) return null;
 
-        return player.getWorld().getBlock(result.getHitBlock());
+        return TKBlock.wrap(result.getHitBlock());
     }
 
     public void updateInventory() {

@@ -1,12 +1,14 @@
 package com.ewoudje.townskings.user.commands;
 
 import com.ewoudje.townskings.NonePlayer;
+import com.ewoudje.townskings.api.town.Town;
 import com.ewoudje.townskings.api.wrappers.TKPlayer;
 import com.ewoudje.townskings.api.TKPlugin;
-import com.ewoudje.townskings.town.Town;
 import com.ewoudje.townskings.api.wrappers.TKItem;
 import com.ewoudje.townskings.block.FoundingBlock;
+import com.ewoudje.townskings.item.Items;
 import com.ewoudje.townskings.user.mode.ClaimPlotMode;
+import com.ewoudje.townskings.util.SendUtil;
 import com.jonahseguin.drink.annotation.Command;
 import com.jonahseguin.drink.annotation.Require;
 import com.jonahseguin.drink.annotation.Sender;
@@ -16,6 +18,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
+import java.util.Set;
 
 public class TKCommands {
 
@@ -35,23 +38,23 @@ public class TKCommands {
     @Require("tk.user.create")
     public void create(@Sender TKPlayer player, @Text String name) {
         if (player.getTown() != null) {
-            player.send(Message.fromKey("already-in-town").replacements(player.getTown().getName()));
+            SendUtil.send(player, Message.fromKey("already-in-town").replacements(player.getTown().getName()));
             return;
         }
 
-        if (player.getWorld().getTown(name) != null) {
-            player.send(Message.fromKey("town-exists").replacements(name));
+        if (player.getWorld().getTown(name).isPresent()) {
+            SendUtil.send(player, Message.fromKey("town-exists").replacements(name));
             return;
         }
 
         ItemStack item = player.getPlayer().getInventory().getItemInMainHand();
-        TKItem ci = plugin.getItem(item);
+        TKItem ci = Items.getItem(item);
         if (ci == null || !ci.getType().is(FoundingBlock.class)) {
-            player.send(Message.fromKey("invalid-item"));
+            SendUtil.send(player, Message.fromKey("invalid-item"));
             return;
         }
 
-        player.send(Message.fromKey("when-placed-create-town"));
+        SendUtil.send(player, Message.fromKey("when-placed-create-town"));
 
         FoundingBlock.makeReady(ci, name);
     }
@@ -59,7 +62,7 @@ public class TKCommands {
     @Command(name = "list", aliases = {}, desc = "List towns", usage = "")
     @Require("tk.user.list")
     public void list(@Sender TKPlayer player) {
-        List<Town> towns = player.getWorld().getTKPlugin();
+        Set<Town> towns = player.getWorld().getTowns();
 
         Message message = Message.fromKey("list-towns-start");
 
@@ -67,7 +70,7 @@ public class TKCommands {
             message.append(Message.fromKey("list-towns-entry").replacements(town.getName()));
         }
 
-       player.send(message);
+       SendUtil.send(player, message);
     }
 
     @Command(name = "join", aliases = {}, desc = "Join town", usage = "")
@@ -75,20 +78,20 @@ public class TKCommands {
     public void join(@Sender TKPlayer player, Town town) {
 
         if (player.getTown() != null) {
-            player.send(Message.fromKey("already-in-town").replacements(player.getTown().getName(), town));
+            SendUtil.send(player, Message.fromKey("already-in-town").replacements(player.getTown().getName(), town));
             return;
         }
 
         if (town.isInvited(player)) {
-            town.broadcast(Message.fromKey("player-joined").replacements(player.getPlayer().getName()), plugin);
+            SendUtil.broadcast(town, Message.fromKey("player-joined").replacements(player.getPlayer().getName()));
 
             town.join(player);
 
-            player.send(Message.fromKey("join-town").replacements(town.getName()));
+            SendUtil.send(player, Message.fromKey("join-town").replacements(town.getName()));
         } else {
-            town.broadcast(Message.fromKey("wants-join").replacements(player.getPlayer().getName()), plugin);
+            SendUtil.broadcast(town, Message.fromKey("wants-join").replacements(player.getPlayer().getName()));
 
-            player.send(Message.fromKey("need-invite"));
+            SendUtil.send(player, Message.fromKey("need-invite"));
         }
     }
 
@@ -98,9 +101,9 @@ public class TKCommands {
 
         player.getTown().invite(invitee);
 
-        player.send(Message.fromKey("invite-success")
+        SendUtil.send(player, Message.fromKey("invite-success")
                 .replacements(invitee.getPlayer().getName(), player.getTown().getName()));
-        invitee.send(Message.fromKey("town-invite")
+        SendUtil.send(invitee, Message.fromKey("town-invite")
                 .replacements(player.getPlayer().getName(), player.getTown().getName()));
     }
 
@@ -108,11 +111,12 @@ public class TKCommands {
     @Require("tk.user.leave")
     public void leave(@Sender @RequireTown TKPlayer player) {
         Town c = player.getTown();
+        String name = c.getName(); //We have to get it now bcs after leaving it can become invalid
 
         c.leave(player);
-        c.broadcast(Message.fromKey("player-left").replacements(player.getPlayer().getName()), plugin);
+        SendUtil.broadcast(c, Message.fromKey("player-left").replacements(player.getPlayer().getName()));
 
-        player.send(Message.fromKey("leave-town").replacements(c.getName()));
+        SendUtil.send(player, Message.fromKey("leave-town").replacements(name));
     }
 
     @Command(name = "test", aliases = {}, desc = "Test", usage = "")
@@ -142,7 +146,7 @@ public class TKCommands {
     public void owner(@Sender TKPlayer player, @Noneable TKPlayer owner, Town town) {
         town.setOwner(owner == null ? new NonePlayer() : owner.getOfflinePlayer());
 
-        player.send(Message.fromKey("owner-changed")
+        SendUtil.send(player, Message.fromKey("owner-changed")
                 .replacements(town.getName(), owner == null ? "None" : owner.getPlayer().getName()));
     }
 

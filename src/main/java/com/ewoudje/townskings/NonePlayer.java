@@ -15,12 +15,6 @@ public class NonePlayer implements OfflinePlayer {
     }
 
     @Override
-    public void save(NBTCompound c) {
-        c.setUUID("id", uuid);
-        c.setString("name", name);
-    }
-
-    @Override
     public String getName() {
         return name;
     }

@@ -2,6 +2,7 @@ package com.ewoudje.townskings.user.commands;
 
 import com.ewoudje.townskings.api.TKPlugin;
 import com.ewoudje.townskings.api.wrappers.TKPlayer;
+import com.ewoudje.townskings.datastore.RedisPlayer;
 import com.jonahseguin.drink.CommandService;
 import com.jonahseguin.drink.annotation.Sender;
 import com.jonahseguin.drink.argument.CommandArg;
@@ -37,7 +38,7 @@ public class TKPlayerSenderProvider extends DrinkProvider<TKPlayer> {
     public TKPlayer provide(@Nonnull CommandArg arg, @Nonnull List<? extends Annotation> annotations) throws CommandExitMessage {
         if (arg.isSenderPlayer()) {
             Player p = arg.getSenderAsPlayer();
-            TKPlayer cp = plugin.getPlayer(p);
+            TKPlayer cp = RedisPlayer.read(p);
 
             if (annotations.stream().anyMatch((a) -> a.annotationType().equals(RequireTown.class))) {
                 if (cp.getTown() != null) {

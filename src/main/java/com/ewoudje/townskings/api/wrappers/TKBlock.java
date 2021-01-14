@@ -1,59 +1,35 @@
 package com.ewoudje.townskings.api.wrappers;
 
-import com.ewoudje.townskings.api.block.BlockData;
+import com.ewoudje.townskings.TK;
 import com.ewoudje.townskings.api.block.BlockType;
-import de.tr7zw.nbtapi.NBTListCompound;
+import com.ewoudje.townskings.base.BaseTKBlock;
+import com.ewoudje.townskings.datastore.RedisBlock;
 import org.bukkit.block.Block;
 
 import java.util.UUID;
 
-public class TKBlock {
+public interface TKBlock {
 
-    private final TKWorld world;
-    private final Block block;
-    private final BlockType type;
-    private final BlockData data;
-    private final UUID id;
-
-    public TKBlock(TKWorld world, Block block, BlockType type, BlockData data, UUID id) {
-        this.world = world;
-        this.block = block;
-        this.type = type;
-        this.data = data;
-        this.id = id;
+    static TKBlock wrap(Block block) {
+        String s = TK.REDIS.get("pos:" + block.getX() + ":" + block.getY() + ":" + block.getZ());
+        if (s != null) {
+            return new RedisBlock(UUID.fromString(s));
+        } else {
+            return new BaseTKBlock(block);
+        }
     }
 
-    public void save(NBTListCompound compound) {
-        compound.setString("type", type.getName());
-        compound.setInteger("x", block.getX());
-        compound.setInteger("y", block.getY());
-        compound.setInteger("z", block.getZ());
-        compound.setUUID("id", id);
-        if (data != null)
-            data.save(compound);
-    }
+    Block getBlock();
 
-    public Block getBlock() {
-        return block;
-    }
+    BlockType getType();
 
-    public BlockType getType() {
-        return type;
-    }
+    void destroy();
 
-    public BlockData getData() {
-        return data;
-    }
+    UUID getUID();
 
-    public TKWorld getWorld() {
-        return world;
-    }
+    int getX();
 
-    public void remove() {
-        world.remove(this);
-    }
+    int getY();
 
-    public UUID getId() {
-        return id;
-    }
+    int getZ();
 }

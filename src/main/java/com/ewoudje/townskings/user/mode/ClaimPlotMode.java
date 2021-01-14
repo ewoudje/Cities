@@ -2,6 +2,7 @@ package com.ewoudje.townskings.user.mode;
 
 import com.ewoudje.townskings.api.PlotOwner;
 import com.ewoudje.townskings.api.town.PlotSettings;
+import com.ewoudje.townskings.api.town.Town;
 import com.ewoudje.townskings.api.world.BlockPosition;
 import com.ewoudje.townskings.api.wrappers.TKBlock;
 import com.ewoudje.townskings.api.wrappers.TKItem;
@@ -14,12 +15,10 @@ import com.ewoudje.townskings.api.mode.Mode;
 import com.ewoudje.townskings.mode.ModeHandler;
 import com.ewoudje.townskings.mode.ModeSetting;
 import com.ewoudje.townskings.mode.ModeStatus;
-import com.ewoudje.townskings.town.Town;
 import com.ewoudje.townskings.town.plot.TKPlot;
-import com.ewoudje.townskings.world.FillBlockChange;
+import com.ewoudje.townskings.util.SendUtil;
 import com.ewoudje.townskings.world.HollowBlockChange;
 import me.wiefferink.interactivemessenger.processing.Message;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -64,7 +63,7 @@ public class ClaimPlotMode implements Mode {
         switch (slot) {
             case 0:
                 start = new BlockPosition(block.getBlock());
-                player.send(Message.fromKey("select-block1"));
+                SendUtil.send(player, Message.fromKey("select-block1"));
                 if (end != null && start.getY() > end.getY()) {
                     BlockPosition tmp = end;
                     end = start;
@@ -79,7 +78,7 @@ public class ClaimPlotMode implements Mode {
         switch (slot) {
             case 0:
                 end = new BlockPosition(block.getBlock());
-                player.send(Message.fromKey("select-block2"));
+                SendUtil.send(player, Message.fromKey("select-block2"));
                 if (start != null && start.getY() > end.getY()) {
                     BlockPosition tmp = end;
                     end = start;
@@ -91,6 +90,7 @@ public class ClaimPlotMode implements Mode {
                 modeHandler.updateInventory(player);
                 break;
             case 8:
+                /*
                 if (player.getWorld().claimPlot(new TKPlot(start, end, depth, new PlotSettings() {
                     @Override
                     public String getName() {
@@ -118,7 +118,8 @@ public class ClaimPlotMode implements Mode {
                     modeHandler.updateChunks(player);
                 } else {
                     player.send(Message.fromKey("spot-taken"));
-                }
+                }*/
+                SendUtil.send(player, Message.fromKey("not-implemented"));
                 break;
         }
     }
