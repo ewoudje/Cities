@@ -65,6 +65,11 @@ public final class TK extends JavaPlugin implements TKPlugin {
             getServer().getPluginManager().registerEvents(new TKPlayerListener(this), this);
             getServer().getPluginManager().registerEvents(new TKItemListener(this), this);
             getServer().getPluginManager().registerEvents(new TKBlockListener(this), this);
+
+            this.getServer().getWorlds().forEach((w) -> {
+                REDIS.sadd("worlds", w.getUID().toString());
+                REDIS.hset("world:" + w.getUID().toString(), "name", w.getName());
+            });
         } catch (Exception e) {
             Sentry.captureException(e);
             e.printStackTrace();

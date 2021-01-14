@@ -41,6 +41,11 @@ public class RedisWorld implements TKWorld {
     }
 
     @Override
+    public String getName() {
+        return TK.REDIS.hget("world:" + this.uuid.toString(), "name");
+    }
+
+    @Override
     public UUID getUID() {
         return uuid;
     }

@@ -15,5 +15,7 @@ public interface TKWorld {
 
     World getWorld();
 
+    String getName();
+
     UUID getUID();
 }
