@@ -1,4 +1,4 @@
-# TKPlugin
+# Towns And Kings
 A Minecraft plugin
 
 ## What is it?
