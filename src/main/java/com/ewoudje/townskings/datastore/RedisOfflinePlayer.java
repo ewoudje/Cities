@@ -15,8 +15,8 @@ public class RedisOfflinePlayer implements OfflinePlayer {
 
     @Override
     public String getName() {
-        return TK.REDIS.get("players:" + uuid.toString() + ":name");
-    } //TODO name is not set? should we do this?
+        return TK.REDIS.hget("player:" + uuid.toString(), "name");
+    }
 
     @Override
     public UUID getUniqueId() {

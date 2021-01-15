@@ -6,6 +6,7 @@ import com.ewoudje.townskings.api.town.Plot;
 import com.ewoudje.townskings.api.world.BlockPosition;
 import com.ewoudje.townskings.api.wrappers.TKPlayer;
 import com.ewoudje.townskings.datastore.RedisChunk;
+import com.ewoudje.townskings.datastore.RedisPlayer;
 import io.sentry.Sentry;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,8 +27,9 @@ public class TKPlayerListener implements Listener {
     }
 
     @EventHandler
-    public void onJoin(PlayerJoinEvent joinEvent) {
+    public void onJoin(PlayerJoinEvent e) {
         try {
+            RedisPlayer.updateUsername(e.getPlayer().getUniqueId(), e.getPlayer().getName());
             //playerMap.put(joinEvent.getPlayer(),
             //        new TKPlayer(joinEvent.getPlayer(), plugin.getWorld(joinEvent.getPlayer().getWorld())));
         } catch (Exception ex) {

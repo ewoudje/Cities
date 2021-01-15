@@ -38,15 +38,15 @@ public class RedisPlayer implements TKPlayer {
 
     public void setTown(Town town) {
         if (town == null) {
-            TK.REDIS.del("player:" + player.getUniqueId().toString() + ":town");
+            TK.REDIS.hdel("player:" + player.getUniqueId().toString(), "town");
         } else {
-            TK.REDIS.set("player:" + player.getUniqueId().toString() + ":town", town.getUID().toString());
+            TK.REDIS.hset("player:" + player.getUniqueId().toString(), "town", town.getUID().toString());
         }
     }
 
     @Nullable
     public Town getTown() {
-        return UUIDUtil.fromString(TK.REDIS.get("player:" + player.getUniqueId().toString() + ":town")).map(RedisTown::new).orElse(null);
+        return UUIDUtil.fromString(TK.REDIS.hget("player:" + player.getUniqueId().toString(), "town")).map(RedisTown::new).orElse(null);
     }
 
     @Nonnull
@@ -92,5 +92,9 @@ public class RedisPlayer implements TKPlayer {
     @Override
     public boolean is(OfflinePlayer player) {
         return player.getUniqueId().equals(this.getUID());
+    }
+
+    public static void updateUsername(UUID uuid, String name) {
+        TK.REDIS.hset("player:" + uuid.toString(), "name", name);
     }
 }
