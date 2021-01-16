@@ -13,6 +13,7 @@ import com.ewoudje.townskings.util.UUIDUtil;
 import io.sentry.Sentry;
 import org.bukkit.Bukkit;
 
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -159,7 +160,7 @@ public class RedisTown implements Town {
         town.addDemographic(def);
 
         town.addPlotSettings(RedisPlotSettings.createPlotSettings("default", 10000,
-                town, Set.of(def), Set.of(mayor)));
+                town, Collections.singleton(def), Collections.singleton(mayor)));
 
         town.join(player);
 

@@ -1,20 +1,17 @@
 package com.ewoudje.townskings.user.mode;
 
-import com.ewoudje.townskings.api.PlotOwner;
+import com.ewoudje.townskings.api.mode.Mode;
 import com.ewoudje.townskings.api.town.Plot;
 import com.ewoudje.townskings.api.town.PlotSettings;
-import com.ewoudje.townskings.api.town.Town;
 import com.ewoudje.townskings.api.world.BlockPosition;
 import com.ewoudje.townskings.api.wrappers.TKBlock;
 import com.ewoudje.townskings.api.wrappers.TKItem;
 import com.ewoudje.townskings.api.wrappers.TKPlayer;
 import com.ewoudje.townskings.datastore.RedisPlot;
-import com.ewoudje.townskings.datastore.RedisPlotSettings;
 import com.ewoudje.townskings.item.InventoryDesigner;
 import com.ewoudje.townskings.item.ItemIcon;
 import com.ewoudje.townskings.item.ItemNone;
 import com.ewoudje.townskings.item.Items;
-import com.ewoudje.townskings.api.mode.Mode;
 import com.ewoudje.townskings.mode.ModeHandler;
 import com.ewoudje.townskings.mode.ModeSetting;
 import com.ewoudje.townskings.mode.ModeStatus;
@@ -27,8 +24,8 @@ import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class ClaimPlotMode implements Mode {
     private final InventoryDesigner inventoryDesigner = new InventoryDesigner(Material.AIR);
@@ -139,7 +136,12 @@ public class ClaimPlotMode implements Mode {
     @Nonnull
     @Override
     public List<ModeSetting> getSettings() {
-        return List.of(ModeSetting.FLY, ModeSetting.CLIENTMODE, ModeSetting.INVULNERABLE, ModeSetting.ADVENTURE_MODE);
+        List<ModeSetting> result = new ArrayList<>();
+        result.add(ModeSetting.FLY);
+        result.add(ModeSetting.CLIENTMODE);
+        result.add(ModeSetting.INVULNERABLE);
+        result.add(ModeSetting.ADVENTURE_MODE);
+        return result;
     }
 
     @Nonnull
