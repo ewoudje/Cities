@@ -36,10 +36,6 @@ public class TKPlayerProvider extends DrinkProvider<TKPlayer> {
     public TKPlayer provide(@Nonnull CommandArg arg, @Nonnull List<? extends Annotation> annotations) throws CommandExitMessage {
         String name = arg.get();
 
-        for (Annotation a : annotations) {
-            System.out.println(a.toString());
-        }
-
         if (name.equals("null") && annotations.stream().anyMatch((p) -> p.annotationType().equals(Noneable.class)))
             return null;
 
