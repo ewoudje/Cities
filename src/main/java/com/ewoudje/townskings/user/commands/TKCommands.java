@@ -1,14 +1,14 @@
 package com.ewoudje.townskings.user.commands;
 
 import com.ewoudje.townskings.NonePlayer;
-import com.ewoudje.townskings.api.town.Demographic;
-import com.ewoudje.townskings.api.town.PlotSettings;
-import com.ewoudje.townskings.api.town.Town;
-import com.ewoudje.townskings.api.wrappers.TKPlayer;
 import com.ewoudje.townskings.api.TKPlugin;
+import com.ewoudje.townskings.api.town.PlotCategory;
+import com.ewoudje.townskings.api.town.Town;
 import com.ewoudje.townskings.api.wrappers.TKItem;
+import com.ewoudje.townskings.api.wrappers.TKPlayer;
 import com.ewoudje.townskings.block.FoundingBlock;
 import com.ewoudje.townskings.item.Items;
+import com.ewoudje.townskings.user.DefaultPermission;
 import com.ewoudje.townskings.user.mode.ClaimPlotMode;
 import com.ewoudje.townskings.util.SendUtil;
 import com.jonahseguin.drink.annotation.Command;
@@ -20,6 +20,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Set;
+import java.util.UUID;
 
 public class TKCommands {
 
@@ -121,15 +122,22 @@ public class TKCommands {
     }
 
     @Command(name = "test", aliases = {}, desc = "Test", usage = "")
-    @Require("tk.user.test")
+    @Require("tk.admin.test")
     public void test(@Sender TKPlayer player) {
+        TKItem item = Items.getItem(player.getPlayer().getInventory().getItemInMainHand());
 
+        if (item == null) {
+            SendUtil.send(player, Message.fromKey("invalid-item"));
+            return;
+        }
+
+        item.getNBT().setUUID("id", UUID.randomUUID()); //THIS IS NOT GOOD OR NORMAL (test reasons)
     }
 
     @Command(name = "claim", aliases = {}, desc = "claim mode", usage = "")
     @Require("tk.user.claim")
-    public void claim(@Sender @RequireTown TKPlayer s, PlotSettings settings) {
-        if (Demographic.contains(settings.allowedManage(), s)) {
+    public void claim(@Sender @RequireTown TKPlayer s, PlotCategory settings) {
+        if (settings.isAllowed(s, DefaultPermission.MANAGE)) {
             if (plugin.getModeHandler().get(s.getPlayer()) == null) {
                 plugin.getModeHandler().goInto(s, new ClaimPlotMode(settings));
             } else {

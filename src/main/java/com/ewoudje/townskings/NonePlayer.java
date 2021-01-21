@@ -1,7 +1,6 @@
 package com.ewoudje.townskings;
 
 import com.ewoudje.townskings.api.OfflinePlayer;
-import de.tr7zw.nbtapi.NBTCompound;
 
 import javax.annotation.Nonnull;
 import java.util.UUID;
@@ -19,9 +18,9 @@ public class NonePlayer implements OfflinePlayer {
         return name;
     }
 
-    @Override
     @Nonnull
-    public UUID getUniqueId() {
+    @Override
+    public UUID getUID() {
         return uuid;
     }
 }

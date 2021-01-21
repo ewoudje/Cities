@@ -1,49 +1,54 @@
-package com.ewoudje.townskings.datastore;
+package com.ewoudje.townskings.remote;
 
 import com.ewoudje.townskings.TK;
 import com.ewoudje.townskings.api.OfflinePlayer;
+import com.ewoudje.townskings.api.UReference;
 import com.ewoudje.townskings.api.town.Demographic;
 import com.ewoudje.townskings.api.town.Town;
 import com.ewoudje.townskings.api.wrappers.TKPlayer;
+import com.ewoudje.townskings.remote.faktory.FaktoryPriority;
 import com.ewoudje.townskings.util.UUIDUtil;
 
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class RedisDemographic implements Demographic {
+public class RemoteDemographic implements Demographic, UReference {
+    public final static RemoteHelper R = new RemoteHelper("Demographic", FaktoryPriority.MC);
+
     private final UUID uuid;
     private final boolean def;
 
-    public RedisDemographic(UUID uuid) {
+    public RemoteDemographic(UUID uuid) {
         this.uuid = uuid;
-        def = "default".equals(TK.REDIS.hget("demo:" + uuid.toString(), "name"));
+        def = "default".equals(R.get(uuid, "name"));
     }
 
     @Override
     public String getName() {
         if (!def)
-            return TK.REDIS.hget("demo:" + uuid.toString(), "name");
+            return R.get(uuid, "name");
         else
             return "default";
     }
 
     @Override
     public void addMember(TKPlayer player) {
-        if (!def)
-            TK.REDIS.sadd("demo:" + uuid.toString() + ":members", player.getUID().toString());
+        //TODO is only allowed if it is allowed by the rules of the demographic
+        //if (!def)
+        //    TK.REDIS.sadd("demo:" + uuid.toString() + ":members", player.getUID().toString());
     }
 
     @Override
     public Town getTown() {
         return UUIDUtil.fromString(TK.REDIS.hget("demo:" + uuid.toString(), "town"))
-                .map(RedisTown::new).orElse(null);
+                .map(RemoteTown::new).orElse(null);
     }
 
     @Override
     public Set<OfflinePlayer> getMembers() {
         if (!def)
-            return TK.REDIS.smembers("demo:" + uuid.toString() + ":members")
+            return R.getSet(uuid, "members")
                 .stream().map(UUID::fromString).map(OfflinePlayer::getFromUUID)
                 .collect(Collectors.toSet());
         else
@@ -57,16 +62,15 @@ public class RedisDemographic implements Demographic {
 
     @Override
     public void dispose() {
-        TK.REDIS.del("demo:" + uuid.toString());
-        TK.REDIS.del("demo:" + uuid.toString() + ":members");
+        R.delete(uuid);
     }
 
     public static Demographic createDemographic(String name, Town town) {
         UUID uuid = UUID.randomUUID();
 
-        TK.REDIS.hset("demo:" + uuid.toString(), "name", name);
-        TK.REDIS.hset("demo:" + uuid.toString(), "town", town.getUID().toString());
+        R.set(uuid, "name", name);
+        R.set(uuid, "town", town.getUID().toString());
 
-        return new RedisDemographic(uuid);
+        return new RemoteDemographic(uuid);
     }
 }

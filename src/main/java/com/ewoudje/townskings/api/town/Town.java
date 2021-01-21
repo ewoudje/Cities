@@ -1,12 +1,12 @@
 package com.ewoudje.townskings.api.town;
 
 import com.ewoudje.townskings.api.OfflinePlayer;
+import com.ewoudje.townskings.api.UObject;
 import com.ewoudje.townskings.api.wrappers.TKPlayer;
 
 import java.util.Set;
-import java.util.UUID;
 
-public interface Town {
+public interface Town extends UObject {
     String getName();
 
     Set<OfflinePlayer> getMembers();
@@ -19,17 +19,17 @@ public interface Town {
 
     void leave(TKPlayer player);
 
-    UUID getUID();
-
     void setFounder(OfflinePlayer offlinePlayer);
 
     OfflinePlayer getFounder();
 
     Set<Plot> getPlots();
 
-    Set<Demographic> getDemographics();
+    Plot getPlot(String name);
 
-    void disband();
+    Set<PlotCategory> getPlotCategories();
 
-    Set<PlotSettings> getPlotSettings();
+    PlotCategory getPlotCategory(String name);
+
+    void destroy();
 }

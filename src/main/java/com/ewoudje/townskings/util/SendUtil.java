@@ -31,6 +31,7 @@ public class SendUtil {
     }
 
     public static void send(TKPlayer player, Message message) {
+        if (player == null) return;
         message.send(player.getPlayer());
     }
 

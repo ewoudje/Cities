@@ -1,18 +1,21 @@
 package com.ewoudje.townskings.listeners;
 
 import com.ewoudje.townskings.api.TKPlugin;
-import com.ewoudje.townskings.api.town.Demographic;
 import com.ewoudje.townskings.api.town.Plot;
 import com.ewoudje.townskings.api.world.BlockPosition;
 import com.ewoudje.townskings.api.wrappers.TKPlayer;
-import com.ewoudje.townskings.datastore.RedisChunk;
-import com.ewoudje.townskings.datastore.RedisPlayer;
+import com.ewoudje.townskings.remote.RemoteChunk;
+import com.ewoudje.townskings.remote.RemotePlayer;
+import com.ewoudje.townskings.user.DefaultPermission;
 import io.sentry.Sentry;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.List;
 
@@ -29,7 +32,7 @@ public class TKPlayerListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         try {
-            RedisPlayer.updateUsername(e.getPlayer().getUniqueId(), e.getPlayer().getName());
+            RemotePlayer.updateUsername(e.getPlayer().getUniqueId(), e.getPlayer().getName());
             //playerMap.put(joinEvent.getPlayer(),
             //        new TKPlayer(joinEvent.getPlayer(), plugin.getWorld(joinEvent.getPlayer().getWorld())));
         } catch (Exception ex) {
@@ -110,7 +113,7 @@ public class TKPlayerListener implements Listener {
     }
 
     private boolean cancelBlockChange(BlockPosition pos, TKPlayer player) {
-        List<Plot> plots = new RedisChunk(pos.getChunkPos()).getPlots();
+        List<Plot> plots = new RemoteChunk(pos.getChunkPos()).getPlots();
 
         for (Plot p : plots) {
             BlockPosition start = p.getStartPosition();
@@ -121,7 +124,7 @@ public class TKPlayerListener implements Listener {
                 if (p.isInfiniteDepth() || (
                         pos.getY() > p.getStartPosition().getY() && pos.getY() < p.getEndPosition().getY()
                 )) {
-                    return Demographic.contains(p.getSettings().allowedBuild(), player);
+                    return p.getSettings().isAllowed(player, DefaultPermission.BUILD);
                 }
             }
         }

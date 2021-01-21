@@ -1,12 +1,12 @@
 package com.ewoudje.townskings.api.town;
 
 import com.ewoudje.townskings.api.OfflinePlayer;
+import com.ewoudje.townskings.api.UObject;
 import com.ewoudje.townskings.api.wrappers.TKPlayer;
 
 import java.util.Set;
-import java.util.UUID;
 
-public interface Demographic {
+public interface Demographic extends UObject {
 
     static boolean contains(Set<Demographic> allowed, TKPlayer p) {
         return allowed.stream()
@@ -21,8 +21,6 @@ public interface Demographic {
     Town getTown();
 
     Set<OfflinePlayer> getMembers();
-
-    UUID getUID();
 
     void dispose();
 }

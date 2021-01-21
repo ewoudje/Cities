@@ -1,10 +1,9 @@
 package com.ewoudje.townskings.user.commands;
 
-import com.ewoudje.townskings.api.town.PlotSettings;
+import com.ewoudje.townskings.api.town.PlotCategory;
 import com.ewoudje.townskings.api.wrappers.TKPlayer;
-import com.ewoudje.townskings.datastore.RedisPlayer;
+import com.ewoudje.townskings.remote.RemotePlayer;
 import com.jonahseguin.drink.CommandService;
-import com.jonahseguin.drink.annotation.Sender;
 import com.jonahseguin.drink.argument.CommandArg;
 import com.jonahseguin.drink.parametric.DrinkProvider;
 import org.bukkit.entity.Player;
@@ -15,7 +14,7 @@ import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.List;
 
-public class PlotSettingsProvider extends DrinkProvider<PlotSettings> {
+public class PlotSettingsProvider extends DrinkProvider<PlotCategory> {
 
     @Override
     public boolean doesConsumeArgument() {
@@ -29,14 +28,18 @@ public class PlotSettingsProvider extends DrinkProvider<PlotSettings> {
 
     @Nullable
     @Override
-    public PlotSettings provide(@Nonnull CommandArg arg, @Nonnull List<? extends Annotation> annotations) throws CommandExitMessage {
+    public PlotCategory provide(@Nonnull CommandArg arg, @Nonnull List<? extends Annotation> annotations) throws CommandExitMessage {
         if (arg.isSenderPlayer()) {
             Player p = arg.getSenderAsPlayer();
-            TKPlayer cp = RedisPlayer.read(p);
+            TKPlayer cp = RemotePlayer.read(p);
 
             if (cp.getTown() != null) {
-                    return cp.getTown().getPlotSettings().stream().filter((s) -> arg.get().equals(s.getName()))
-                            .findAny().orElseThrow(() -> new CommandExitMessage("plotsettings-not-found"));
+                PlotCategory category = cp.getTown().getPlotCategory(arg.get());
+
+                if (category == null)
+                    throw new CommandExitMessage("plotsettings-not-found");
+
+                return category;
             } else throw new CommandExitMessage("have-no-town");
         } else throw new CommandExitMessage("player-only");
     }
@@ -52,6 +55,6 @@ public class PlotSettingsProvider extends DrinkProvider<PlotSettings> {
     }
 
     public void bind(CommandService drink) {
-        drink.bind(PlotSettings.class).toProvider(this);
+        drink.bind(PlotCategory.class).toProvider(this);
     }
 }

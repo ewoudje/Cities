@@ -60,6 +60,7 @@ select-block2: "You selected corner 2!"
 
 claimed-spot: "[green]You successfully claimed a plot"
 spot-taken: "[red]This spot is already taken!"
+plotcategory-not-found: "[red]Category '%0%' is not found!"
 
 #Blocks
 founding-block: "[gold]Founding Lectern"

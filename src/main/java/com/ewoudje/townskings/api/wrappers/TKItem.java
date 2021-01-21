@@ -1,5 +1,6 @@
 package com.ewoudje.townskings.api.wrappers;
 
+import com.ewoudje.townskings.api.UObject;
 import com.ewoudje.townskings.api.item.ItemType;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -13,8 +14,9 @@ import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.UUID;
 
-public class TKItem {
+public class TKItem implements UObject {
     private final ItemStack item;
     private final ItemType type;
 
@@ -52,4 +54,15 @@ public class TKItem {
     }
 
 
+    @Override
+    public UUID getUID() {
+        return getNBT().getUUID("id");
+    }
+
+    //public UUID consumeUID() { TODO make this possible?
+    //    UUID result = getUID();
+    //    getNBT().setUUID("id", UUID.randomUUID());
+    //    return result;
+    //}
+    //This needs to be answerd by the main server, we should probably shift some shit to the backend
 }

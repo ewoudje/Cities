@@ -3,8 +3,7 @@ package com.ewoudje.townskings.util;
 import com.ewoudje.townskings.api.town.Plot;
 import com.ewoudje.townskings.api.world.BlockPosition;
 import com.ewoudje.townskings.api.world.ChunkPosition;
-import com.ewoudje.townskings.datastore.RedisChunk;
-import com.ewoudje.townskings.datastore.RedisPlot;
+import com.ewoudje.townskings.remote.RemoteChunk;
 
 public class PlotApplier {
 
@@ -13,7 +12,7 @@ public class PlotApplier {
         BlockPosition end = plot.getEndPosition();
         for (int x = start.getX() >> 4; x <= (end.getX() >> 4); x++) {
             for (int z = start.getZ() >> 4; z <= (end.getZ() >> 4); z++) {
-                new RedisChunk(new ChunkPosition(x, z)).addPlot(plot);
+                new RemoteChunk(new ChunkPosition(x, z)).addPlot(plot);
             }
         }
     }
@@ -23,7 +22,7 @@ public class PlotApplier {
         BlockPosition end = plot.getEndPosition();
         for (int x = start.getX() >> 4; x <= (end.getX() >> 4); x++) {
             for (int z = start.getZ() >> 4; z <= (end.getZ() >> 4); z++) {
-                new RedisChunk(new ChunkPosition(x, z)).removePlot(plot);
+                new RemoteChunk(new ChunkPosition(x, z)).removePlot(plot);
             }
         }
     }

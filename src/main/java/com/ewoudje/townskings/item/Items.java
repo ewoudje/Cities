@@ -1,9 +1,9 @@
 package com.ewoudje.townskings.item;
 
 import com.ewoudje.townskings.api.TKPlugin;
-import com.ewoudje.townskings.api.wrappers.TKItem;
 import com.ewoudje.townskings.api.block.BlockType;
 import com.ewoudje.townskings.api.item.ItemType;
+import com.ewoudje.townskings.api.wrappers.TKItem;
 import com.ewoudje.townskings.api.wrappers.TKWorld;
 import com.ewoudje.townskings.block.Blocks;
 import de.tr7zw.nbtapi.NBTItem;
@@ -14,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 public class Items {
@@ -48,12 +49,8 @@ public class Items {
             return new TKItem(new ItemStack(Material.getMaterial(key.getKey().toUpperCase(Locale.ROOT)), amount), null);
         } else if (key.getNamespace().equals("tk")) {
             ItemType type = itemsByName.get(key.getKey());
-            TKItem item = new TKItem(new ItemStack(type.getMaterial(), amount), type);
-            item.getNBT().setString("type", type.getName());
 
-            type.create(world, item);
-
-            return item;
+            return createItem(world, type, amount);
         } else return null;
     }
 
@@ -75,6 +72,7 @@ public class Items {
 
         TKItem item = new TKItem(new ItemStack(t.getMaterial(), amount), t);
         item.getNBT().setString("type", t.getName());
+        item.getNBT().setUUID("id", UUID.randomUUID());
 
         t.create(world, item);
         return item;

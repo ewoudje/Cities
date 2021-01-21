@@ -2,13 +2,17 @@ package com.ewoudje.townskings;
 
 import com.ewoudje.townskings.api.TKPlugin;
 import com.ewoudje.townskings.block.Blocks;
-import com.ewoudje.townskings.user.commands.*;
 import com.ewoudje.townskings.item.Items;
 import com.ewoudje.townskings.item.RecipesHandler;
 import com.ewoudje.townskings.listeners.TKBlockListener;
 import com.ewoudje.townskings.listeners.TKItemListener;
 import com.ewoudje.townskings.listeners.TKPlayerListener;
 import com.ewoudje.townskings.mode.ModeHandler;
+import com.ewoudje.townskings.remote.faktory.FaktoryWrapper;
+import com.ewoudje.townskings.remote.response.BlockModifyMessage;
+import com.ewoudje.townskings.remote.response.ChatMessage;
+import com.ewoudje.townskings.remote.response.RemoteResponseHandler;
+import com.ewoudje.townskings.user.commands.*;
 import com.jonahseguin.drink.CommandService;
 import com.jonahseguin.drink.Drink;
 import io.sentry.Sentry;
@@ -28,6 +32,7 @@ public final class TK extends JavaPlugin implements TKPlugin {
     private RecipesHandler recipesHandler;
     private ModeHandler modeHandler;
     public static Jedis REDIS;
+    public static FaktoryWrapper FAKTORY;
     private static JedisPool pool;
 
     @Override
@@ -37,6 +42,12 @@ public final class TK extends JavaPlugin implements TKPlugin {
                     getConfig().getString("redis-host"), getConfig().getInt("redis-port", 7379), 1000,
                     getConfig().getString("redis-pass"));
             REDIS = pool.getResource();
+
+            FAKTORY = new FaktoryWrapper(this);
+            RemoteResponseHandler handler = new RemoteResponseHandler(this);
+            handler.register(new ChatMessage());
+            handler.register(new BlockModifyMessage());
+
 
 
             drink = Drink.get(this);

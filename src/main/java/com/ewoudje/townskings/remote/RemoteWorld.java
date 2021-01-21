@@ -1,8 +1,9 @@
-package com.ewoudje.townskings.datastore;
+package com.ewoudje.townskings.remote;
 
-import com.ewoudje.townskings.TK;
+import com.ewoudje.townskings.api.UReference;
 import com.ewoudje.townskings.api.town.Town;
 import com.ewoudje.townskings.api.wrappers.TKWorld;
+import com.ewoudje.townskings.remote.faktory.FaktoryPriority;
 import com.ewoudje.townskings.util.SendUtil;
 import me.wiefferink.interactivemessenger.processing.Message;
 import org.bukkit.Bukkit;
@@ -13,26 +14,27 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class RedisWorld implements TKWorld {
+public class RemoteWorld implements TKWorld, UReference {
+    public final static RemoteHelper R = new RemoteHelper("World", FaktoryPriority.MC);
+
     private final UUID uuid;
 
-    public RedisWorld(World world) {
+    public RemoteWorld(World world) {
         this.uuid = world.getUID();
     }
 
-    public RedisWorld(UUID uuid) {
+    public RemoteWorld(UUID uuid) {
         this.uuid = uuid;
     }
 
     public Optional<Town> getTown(String name) {
-        return Optional.ofNullable(TK.REDIS.hget("world:" + uuid.toString() + ":towns", name))
-                .map((s) -> new RedisTown(UUID.fromString(s)));
+        return Optional.ofNullable(R.hGet(uuid, "towns", name, RemoteTown.class));
     }
 
     @Override
     public Set<Town> getTowns() {
-        return TK.REDIS.hgetAll("world:" + uuid.toString() + ":towns").values().stream()
-                .map((s) -> new RedisTown(UUID.fromString(s))).collect(Collectors.toSet());
+        return R.hValues(uuid, "towns").stream()
+                .map((s) -> new RemoteTown(UUID.fromString(s))).collect(Collectors.toSet());
     }
 
     @Override
@@ -42,7 +44,7 @@ public class RedisWorld implements TKWorld {
 
     @Override
     public String getName() {
-        return TK.REDIS.hget("world:" + this.uuid.toString(), "name");
+        return R.get(uuid, "name");
     }
 
     @Override
@@ -50,12 +52,8 @@ public class RedisWorld implements TKWorld {
         return uuid;
     }
 
-    public void addTown(String name, UUID uuid) {
-        TK.REDIS.hset("world:" + this.uuid.toString() + ":towns", name, uuid.toString());
-    }
-
     public void removeTown(String name) {
-        TK.REDIS.hdel("world:" + this.uuid.toString() + ":towns", name);
+        R.hRem(uuid, "towns", name);
         SendUtil.broadcast(this, Message.fromKey("broadcast-town-disband").replacements(name));
     }
 }

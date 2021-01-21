@@ -1,13 +1,11 @@
 package com.ewoudje.townskings.user.mode;
 
 import com.ewoudje.townskings.api.mode.Mode;
-import com.ewoudje.townskings.api.town.Plot;
-import com.ewoudje.townskings.api.town.PlotSettings;
+import com.ewoudje.townskings.api.town.PlotCategory;
 import com.ewoudje.townskings.api.world.BlockPosition;
 import com.ewoudje.townskings.api.wrappers.TKBlock;
 import com.ewoudje.townskings.api.wrappers.TKItem;
 import com.ewoudje.townskings.api.wrappers.TKPlayer;
-import com.ewoudje.townskings.datastore.RedisPlot;
 import com.ewoudje.townskings.item.InventoryDesigner;
 import com.ewoudje.townskings.item.ItemIcon;
 import com.ewoudje.townskings.item.ItemNone;
@@ -15,7 +13,7 @@ import com.ewoudje.townskings.item.Items;
 import com.ewoudje.townskings.mode.ModeHandler;
 import com.ewoudje.townskings.mode.ModeSetting;
 import com.ewoudje.townskings.mode.ModeStatus;
-import com.ewoudje.townskings.util.PlotApplier;
+import com.ewoudje.townskings.remote.RemotePlot;
 import com.ewoudje.townskings.util.SendUtil;
 import com.ewoudje.townskings.world.HollowBlockChange;
 import me.wiefferink.interactivemessenger.processing.Message;
@@ -33,9 +31,9 @@ public class ClaimPlotMode implements Mode {
     private boolean wasSlot1;
     private BlockPosition start;
     private BlockPosition end;
-    private PlotSettings settings;
+    private PlotCategory settings;
 
-    public ClaimPlotMode(PlotSettings settings) {
+    public ClaimPlotMode(PlotCategory settings) {
         TKItem item = Items.createItem(null, ItemNone.class);
         for (int i = 36; i <= 44; i++)
             inventoryDesigner.set(i, item);
@@ -97,9 +95,7 @@ public class ClaimPlotMode implements Mode {
                 modeHandler.disable(player.getPlayer());
                 break;
             case 8:
-                Plot plot = RedisPlot.createPlot(start, end, settings, depth);
-
-                PlotApplier.applyPlot(plot);
+                RemotePlot.createPlot(player.getWorld(), "dummy", start, end, settings, depth); //TODO fix name
                 start = null;
                 end = null;
                 modeHandler.updateChunks(player);

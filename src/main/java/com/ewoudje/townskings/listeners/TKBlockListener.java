@@ -27,6 +27,8 @@ public class TKBlockListener implements Listener {
 
                 if (!block.getType().onBreak(player.getWorld(), player, block)) {
                     e.setCancelled(true);
+                } else {
+                    block.destroy();
                 }
             }
         } catch (Exception ex) {

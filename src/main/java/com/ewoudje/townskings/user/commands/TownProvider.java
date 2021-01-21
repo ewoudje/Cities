@@ -2,8 +2,8 @@ package com.ewoudje.townskings.user.commands;
 
 import com.ewoudje.townskings.api.TKPlugin;
 import com.ewoudje.townskings.api.town.Town;
-import com.ewoudje.townskings.datastore.RedisTown;
-import com.ewoudje.townskings.datastore.RedisWorld;
+import com.ewoudje.townskings.remote.RemoteTown;
+import com.ewoudje.townskings.remote.RemoteWorld;
 import com.jonahseguin.drink.CommandService;
 import com.jonahseguin.drink.argument.CommandArg;
 import com.jonahseguin.drink.exception.CommandExitMessage;
@@ -13,7 +13,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class TownProvider extends DrinkProvider<Town> {
@@ -43,7 +42,7 @@ public class TownProvider extends DrinkProvider<Town> {
         }
 
         String name = builder.toString();
-        RedisWorld w = new RedisWorld(arg.getSenderAsPlayer().getWorld());
+        RemoteWorld w = new RemoteWorld(arg.getSenderAsPlayer().getWorld());
 
         return w.getTown(name).orElseThrow(() -> new CommandExitMessage("invalid-town"));
     }
@@ -55,7 +54,7 @@ public class TownProvider extends DrinkProvider<Town> {
 
     @Override
     public List<String> getSuggestions(@Nonnull String prefix) {
-        return RedisTown.getAllTowns().stream()
+        return RemoteTown.getAllTowns().stream()
                 .map(Town::getName)
                 .filter((c) -> c.startsWith(prefix))
                 .collect(Collectors.toList());

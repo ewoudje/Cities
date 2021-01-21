@@ -8,8 +8,8 @@ import com.ewoudje.townskings.api.wrappers.TKBlock;
 import com.ewoudje.townskings.api.wrappers.TKItem;
 import com.ewoudje.townskings.api.wrappers.TKPlayer;
 import com.ewoudje.townskings.api.wrappers.TKWorld;
-import com.ewoudje.townskings.datastore.RedisBlock;
-import com.ewoudje.townskings.datastore.RedisTown;
+import com.ewoudje.townskings.remote.RemoteBlock;
+import com.ewoudje.townskings.remote.RemoteTown;
 import com.ewoudje.townskings.util.SendUtil;
 import de.tr7zw.nbtapi.NBTCompound;
 import me.wiefferink.interactivemessenger.processing.Message;
@@ -55,12 +55,12 @@ public class FoundingBlock implements ItemType, BlockType {
             return false;
         }
 
-        TKBlock fBlock = RedisBlock.createBlock(b, this.getClass());
+        TKBlock fBlock = RemoteBlock.createBlock(item.getUID(), b, this.getClass());
 
-        RedisTown.create(name, player, fBlock, world);
+        RemoteTown.create(name, player, fBlock, world);
 
-        SendUtil.broadcast(Message.fromKey("broadcast-create-town")
-                .replacements(player.getPlayer().getName(), name));
+        //SendUtil.broadcast(Message.fromKey("broadcast-create-town")
+        //        .replacements(player.getPlayer().getName(), name));
 
         SendUtil.send(player, Message.fromKey("create-town").replacements(name));
 

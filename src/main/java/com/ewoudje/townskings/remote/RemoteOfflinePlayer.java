@@ -1,25 +1,26 @@
-package com.ewoudje.townskings.datastore;
+package com.ewoudje.townskings.remote;
 
-import com.ewoudje.townskings.TK;
 import com.ewoudje.townskings.api.OfflinePlayer;
+import com.ewoudje.townskings.api.UReference;
 
 import java.util.Objects;
 import java.util.UUID;
 
-public class RedisOfflinePlayer implements OfflinePlayer {
+public class RemoteOfflinePlayer implements OfflinePlayer, UReference {
+    public final static RemoteHelper R = RemotePlayer.R;
     private final UUID uuid;
 
-    public RedisOfflinePlayer(UUID uuid) {
+    public RemoteOfflinePlayer(UUID uuid) {
         this.uuid = uuid;
     }
 
     @Override
     public String getName() {
-        return TK.REDIS.hget("player:" + uuid.toString(), "name");
+        return R.get(uuid, "name");
     }
 
     @Override
-    public UUID getUniqueId() {
+    public UUID getUID() {
         return uuid;
     }
 
@@ -27,7 +28,7 @@ public class RedisOfflinePlayer implements OfflinePlayer {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        RedisOfflinePlayer that = (RedisOfflinePlayer) o;
+        RemoteOfflinePlayer that = (RemoteOfflinePlayer) o;
         return Objects.equals(uuid, that.uuid);
     }
 
