@@ -26,7 +26,7 @@ public class RemoteHelper {
     public RemoteHelper(String name, JobQueue def) {
         this.name = name;
         redisPrefix = name.toLowerCase() + ":";
-        faktoryPrefix = "TK" + name + ".";
+        faktoryPrefix = "TownsKings.Repo." + name + ".";
         sub = new HashSet<>();
         this.def = def;
     }

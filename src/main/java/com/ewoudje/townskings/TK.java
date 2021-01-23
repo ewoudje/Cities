@@ -79,7 +79,7 @@ public final class TK extends JavaPlugin implements TKPlugin {
 
             this.getServer().getWorlds().forEach((w) -> {
                 REDIS.sadd("worlds", w.getUID().toString());
-                REDIS.hset("world:" + w.getUID().toString(), "name", w.getName());
+                REDIS.hset("world:" + w.getUID().toString() + ":self", "name", w.getName());
             });
         } catch (Exception e) {
             Sentry.captureException(e);
