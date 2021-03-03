@@ -1,5 +1,6 @@
 package com.ewoudje.townskings.remote.response;
 
+import com.ewoudje.townskings.NamedPrefix;
 import com.ewoudje.townskings.TK;
 import com.ewoudje.townskings.api.wrappers.TKPlayer;
 import com.ewoudje.townskings.remote.RemoteTown;
@@ -36,6 +37,17 @@ public class ChatMessage implements RemoteResponseType<ChatMessage.BroadcastValu
 
     @Override
     public void execute(BroadcastValues input) {
+
+        for (int i = 0; i < input.parameters.length; i++) {
+            String parameter = input.parameters[i];
+
+            String[] s = parameter.split("@");
+
+            if (s.length == 2) {
+                input.parameters[i] = NamedPrefix.getByPrefix(s[0]).getName(UUID.fromString(s[1]));
+            }
+        }
+
         if (input.targetType == null || input.targetType.equals("all")) {
             SendUtil.broadcast(Message.fromKey(input.message).replacements((Object[]) input.parameters));
         } else if (input.targetType.equals("player")) {
