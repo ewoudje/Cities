@@ -1,6 +1,8 @@
 package com.ewoudje.townskings.remote.faktory;
 
-public enum FaktoryPriority implements com.github.sikandar.faktory.JobQueue {
+import com.ewoudje.townskings.api.Named;
+
+public enum FaktoryPriority implements com.github.sikandar.faktory.JobQueue, Named {
     MCHIGH,
     MC,
     MID,

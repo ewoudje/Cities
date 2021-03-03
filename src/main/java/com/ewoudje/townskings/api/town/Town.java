@@ -1,13 +1,13 @@
 package com.ewoudje.townskings.api.town;
 
+import com.ewoudje.townskings.api.Named;
 import com.ewoudje.townskings.api.OfflinePlayer;
 import com.ewoudje.townskings.api.UObject;
 import com.ewoudje.townskings.api.wrappers.TKPlayer;
 
 import java.util.Set;
 
-public interface Town extends UObject {
-    String getName();
+public interface Town extends UObject, Named {
 
     Set<OfflinePlayer> getMembers();
 

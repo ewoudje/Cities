@@ -7,15 +7,13 @@ import com.ewoudje.townskings.remote.RemoteOfflinePlayer;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface OfflinePlayer extends UObject {
+public interface OfflinePlayer extends UObject, Named {
 
     static OfflinePlayer getFromUUID(UUID uuid) {
         if (NonePlayer.is(uuid)) return new NonePlayer();
 
         return new RemoteOfflinePlayer(uuid);
     }
-
-    String getName();
 
     boolean isOnline();
 

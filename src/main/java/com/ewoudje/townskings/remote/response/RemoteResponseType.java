@@ -1,8 +1,8 @@
 package com.ewoudje.townskings.remote.response;
 
-public interface RemoteResponseType<T> {
+import com.ewoudje.townskings.api.Named;
 
-    String getName();
+public interface RemoteResponseType<T> extends Named {
 
     boolean sync();
 
