@@ -4,6 +4,7 @@ import com.ewoudje.townskings.TK;
 import com.ewoudje.townskings.api.TKPlugin;
 import com.ewoudje.townskings.util.UUIDUtil;
 import io.sentry.Sentry;
+import redis.clients.jedis.Jedis;
 
 import java.util.HashMap;
 import java.util.Optional;
@@ -29,17 +30,19 @@ public class RemoteResponseHandler {
     }
 
     private void run() {
-        queue("mcqueue:fast", tick_max_fast);
-        queue("mcqueue:med", tick_max_med);
-        queue("mcqueue:slow", tick_max_slow);
+        Jedis redis = ((TK) plugin).getRedis();
+        queue(redis, "mcqueue:fast", tick_max_fast);
+        queue(redis, "mcqueue:med", tick_max_med);
+        queue(redis, "mcqueue:slow", tick_max_slow);
+        redis.close();
     }
 
-    private void queue(String name, int max) {
+    private void queue(Jedis redis, String name, int max) {
         for (int i = 0; i < max; i++) {
-            Optional<UUID> uuid = UUIDUtil.fromString(TK.REDIS.lpop(name));
+            Optional<UUID> uuid = UUIDUtil.fromString(redis.lpop(name));
             if (uuid.isPresent()) {
                 String key = "queue:" + uuid.get().toString();
-                RemoteResponseType type = types.get(TK.REDIS.hget(key, "type"));
+                RemoteResponseType type = types.get(redis.hget(key, "type"));
                 final Object r;
                 try {
                     r = type.requestValues(key);
@@ -48,7 +51,7 @@ public class RemoteResponseHandler {
                     e.printStackTrace();
                     return;
                 }
-                TK.REDIS.del(key);
+                redis.del(key);
 
                 Runnable exe = () -> {
                     try {

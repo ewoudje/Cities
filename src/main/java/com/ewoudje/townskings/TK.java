@@ -38,7 +38,9 @@ public final class TK extends JavaPlugin implements TKPlugin {
     @Override
     public void onEnable() {
         try {
-             pool = new JedisPool(new JedisPoolConfig(),
+            saveDefaultConfig();
+
+            pool = new JedisPool(new JedisPoolConfig(),
                     getConfig().getString("redis-host"), getConfig().getInt("redis-port", 7379), 1000,
                     getConfig().getString("redis-pass"));
             REDIS = pool.getResource();
@@ -47,7 +49,6 @@ public final class TK extends JavaPlugin implements TKPlugin {
             RemoteResponseHandler handler = new RemoteResponseHandler(this);
             handler.register(new ChatMessage());
             handler.register(new BlockModifyMessage());
-
 
 
             drink = Drink.get(this);
@@ -93,6 +94,7 @@ public final class TK extends JavaPlugin implements TKPlugin {
         try {
             recipesHandler.removeRecipes();
             modeHandler.disable();
+            getServer().getScheduler().cancelTasks(this);
             REDIS.close();
             pool.close();
         } catch (Exception e) {
@@ -107,5 +109,9 @@ public final class TK extends JavaPlugin implements TKPlugin {
 
     public ModeHandler getModeHandler() {
         return modeHandler;
+    }
+
+    public Jedis getRedis() {
+        return pool.getResource();
     }
 }
