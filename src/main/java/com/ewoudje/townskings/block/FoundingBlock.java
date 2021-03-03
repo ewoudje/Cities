@@ -59,11 +59,6 @@ public class FoundingBlock implements ItemType, BlockType {
 
         RemoteTown.create(name, player, fBlock, world);
 
-        //SendUtil.broadcast(Message.fromKey("broadcast-create-town")
-        //        .replacements(player.getPlayer().getName(), name));
-
-        SendUtil.send(player, Message.fromKey("create-town").replacements(name));
-
         return true;
     }
 
