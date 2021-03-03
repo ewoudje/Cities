@@ -116,9 +116,6 @@ public class TKCommands {
         String name = c.getName(); //We have to get it now bcs after leaving it can become invalid
 
         c.leave(player);
-        SendUtil.broadcast(c, Message.fromKey("player-left").replacements(player.getPlayer().getName()));
-
-        SendUtil.send(player, Message.fromKey("leave-town").replacements(name));
     }
 
     @Command(name = "test", aliases = {}, desc = "Test", usage = "")

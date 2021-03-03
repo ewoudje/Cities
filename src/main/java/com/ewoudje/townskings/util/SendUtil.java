@@ -15,6 +15,7 @@ import me.wiefferink.interactivemessenger.processing.Message;
 import org.bukkit.Bukkit;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Optional;
 
 public class SendUtil {
 
@@ -28,7 +29,7 @@ public class SendUtil {
     }
 
     public static void broadcast(Town town, Message message) {
-        town.getMembers().stream().map(OfflinePlayer::getOnline).forEach(message::send);
+        town.getMembers().stream().map(OfflinePlayer::getOnline).flatMap(Optional::stream).forEach((p) -> SendUtil.send(p, message));
     }
 
     public static void send(TKPlayer player, Message message) {
