@@ -5,6 +5,7 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
+import com.ewoudje.townskings.api.OfflinePlayer;
 import com.ewoudje.townskings.api.town.Town;
 import com.ewoudje.townskings.api.wrappers.TKPlayer;
 import com.ewoudje.townskings.api.wrappers.TKWorld;
@@ -27,7 +28,7 @@ public class SendUtil {
     }
 
     public static void broadcast(Town town, Message message) {
-        town.getMembers().forEach(message::send);
+        town.getMembers().stream().map(OfflinePlayer::getOnline).forEach(message::send);
     }
 
     public static void send(TKPlayer player, Message message) {

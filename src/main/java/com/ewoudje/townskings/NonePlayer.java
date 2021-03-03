@@ -1,8 +1,10 @@
 package com.ewoudje.townskings;
 
 import com.ewoudje.townskings.api.OfflinePlayer;
+import com.ewoudje.townskings.api.wrappers.TKPlayer;
 
 import javax.annotation.Nonnull;
+import java.util.Optional;
 import java.util.UUID;
 
 public class NonePlayer implements OfflinePlayer {
@@ -16,6 +18,16 @@ public class NonePlayer implements OfflinePlayer {
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public boolean isOnline() {
+        return false;
+    }
+
+    @Override
+    public Optional<TKPlayer> getOnline() {
+        return Optional.empty();
     }
 
     @Nonnull

@@ -1,8 +1,10 @@
 package com.ewoudje.townskings.api;
 
 import com.ewoudje.townskings.NonePlayer;
+import com.ewoudje.townskings.api.wrappers.TKPlayer;
 import com.ewoudje.townskings.remote.RemoteOfflinePlayer;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public interface OfflinePlayer extends UObject {
@@ -15,4 +17,7 @@ public interface OfflinePlayer extends UObject {
 
     String getName();
 
+    boolean isOnline();
+
+    Optional<TKPlayer> getOnline();
 }
