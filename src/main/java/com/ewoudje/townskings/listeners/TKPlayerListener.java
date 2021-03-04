@@ -124,7 +124,7 @@ public class TKPlayerListener implements Listener {
                 if (p.isInfiniteDepth() || (
                         pos.getY() > p.getStartPosition().getY() && pos.getY() < p.getEndPosition().getY()
                 )) {
-                    return p.getSettings().isAllowed(player, DefaultPermission.BUILD);
+                    return !p.getSettings().isAllowed(player, DefaultPermission.BUILD);
                 }
             }
         }

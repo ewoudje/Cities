@@ -6,6 +6,7 @@ import com.ewoudje.townskings.api.town.PlotCategory;
 import com.ewoudje.townskings.api.town.Town;
 import com.ewoudje.townskings.api.wrappers.TKPlayer;
 import com.ewoudje.townskings.remote.faktory.FaktoryPriority;
+import com.ewoudje.townskings.user.DefaultPermission;
 
 import java.util.UUID;
 
@@ -25,7 +26,7 @@ public class RemotePlotCategory implements PlotCategory, UReference {
 
     @Override
     public boolean isAllowed(TKPlayer player, Permission permission) {
-        return R.contains(uuid, "perms:" + permission.getUID().toString(), player);
+        return permission == DefaultPermission.MANAGE;//R.contains(uuid, "perms:" + permission.getUID().toString(), player);
     }
 
     @Override

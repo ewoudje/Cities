@@ -95,6 +95,7 @@ public class ClaimPlotMode implements Mode {
                 modeHandler.disable(player.getPlayer());
                 break;
             case 8:
+                if (start == null || end == null) return; //TODO return correct message
                 RemotePlot.createPlot(player.getWorld(), "dummy", start, end, settings, depth); //TODO fix name
                 start = null;
                 end = null;

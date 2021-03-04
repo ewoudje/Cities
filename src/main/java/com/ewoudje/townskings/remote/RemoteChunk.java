@@ -19,12 +19,12 @@ public class RemoteChunk implements TKChunk {
 
     @Override
     public void addPlot(Plot plot) {
-        TK.REDIS.zadd("chunk:" + position.getX() + ":" + position.getZ() + ":claims", plot.getPriority(), plot.getUID().toString());
+        TK.REDIS.zadd("chunk:" + position.getX() + ":" + position.getZ() + ":plots", plot.getPriority(), plot.getUID().toString());
     }
 
     @Override
     public List<Plot> getPlots() {
-        return TK.REDIS.zrange("chunk:" + position.getX() + ":" + position.getZ() + ":claims", 0, -1).stream()
+        return TK.REDIS.zrange("chunk:" + position.getX() + ":" + position.getZ() + ":plots", 0, -1).stream()
                 .map(UUID::fromString)
                 .map(RemotePlot::new)
                 .collect(Collectors.toList());
@@ -32,6 +32,6 @@ public class RemoteChunk implements TKChunk {
 
     @Override
     public void removePlot(Plot plot) {
-        TK.REDIS.zrem("chunk:" + position.getX() + ":" + position.getZ() + ":claims", plot.getUID().toString());
+        TK.REDIS.zrem("chunk:" + position.getX() + ":" + position.getZ() + ":plots", plot.getUID().toString());
     }
 }
