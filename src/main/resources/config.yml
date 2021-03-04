@@ -7,3 +7,6 @@ redis-pass:
 
 claim-size: 50
 minimum-distance-towns: 150
+
+#Period between each faktory tick task
+faktory-tick: 4

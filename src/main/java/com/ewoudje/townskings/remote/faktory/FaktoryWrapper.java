@@ -25,7 +25,7 @@ public class FaktoryWrapper {
                         Sentry.captureException(e);
                         e.printStackTrace();
                     }
-                }, 1, 1);
+                }, 1, plugin.getConfig().getInt("faktory-tick"));
     }
 
     public void push(FaktoryJob job) {
