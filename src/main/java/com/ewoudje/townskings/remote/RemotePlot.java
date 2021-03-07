@@ -74,7 +74,7 @@ public class RemotePlot implements Plot, UReference {
         int yE = Math.max(start.getY(), end.getY());
         int zE = Math.max(start.getZ(), end.getZ());
 
-        R.execute(uuid, "Create", (i) -> i != 0, world, name, xS, yS, zS, xE, yE, zE, depth, settings);
+        R.execute(uuid, "Create", (i) -> i == 2 || i == 11, world, name, xS, yS, zS, xE, yE, zE, depth, settings); //TODO unique mask could be better
 
         return new RemotePlot(uuid);
     }
