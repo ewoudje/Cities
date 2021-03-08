@@ -5,6 +5,10 @@ redis-host: "localhost"
 redis-port: 6379
 redis-pass:
 
+faktory-host: "localhost"
+faktory-port: 7419
+faktory-pass:
+
 claim-size: 50
 minimum-distance-towns: 150
 
