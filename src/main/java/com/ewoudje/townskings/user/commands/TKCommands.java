@@ -11,6 +11,7 @@ import com.ewoudje.townskings.item.Items;
 import com.ewoudje.townskings.user.DefaultPermission;
 import com.ewoudje.townskings.user.mode.ClaimPlotMode;
 import com.ewoudje.townskings.util.SendUtil;
+import com.ewoudje.townskings.util.StringUtil;
 import com.jonahseguin.drink.annotation.Command;
 import com.jonahseguin.drink.annotation.Require;
 import com.jonahseguin.drink.annotation.Sender;
@@ -134,6 +135,9 @@ public class TKCommands {
     @Command(name = "claim", aliases = {}, desc = "claim mode", usage = "")
     @Require("tk.user.claim")
     public void claim(@Sender @RequireTown TKPlayer s, PlotCategory settings) {
+        if (true) //TODO enable claim
+            return;
+
         if (settings.isAllowed(s, DefaultPermission.MANAGE)) {
             if (plugin.getModeHandler().get(s.getPlayer()) == null) {
                 plugin.getModeHandler().goInto(s, new ClaimPlotMode(settings));
@@ -159,5 +163,20 @@ public class TKCommands {
         SendUtil.send(player, Message.fromKey("owner-changed")
                 .replacements(town.getName(), owner == null ? "None" : owner.getPlayer().getName()));
     }
+
+    @Command(name = "give", aliases = {}, desc = "Get item", usage = "")
+    @Require("tk.admin.give")
+    public void owner(@Sender TKPlayer _sender, TKPlayer player, String itemKey, int amount) {
+        TKItem item = Items.createItem(null, StringUtil.getKey(itemKey), amount);
+
+        if (item == null) {
+            SendUtil.send(player, Message.fromKey("invalid-item-key").replacements(itemKey));
+            return;
+        }
+
+        player.getPlayer().getInventory().addItem(item.getItem());
+    }
+
+
 
 }

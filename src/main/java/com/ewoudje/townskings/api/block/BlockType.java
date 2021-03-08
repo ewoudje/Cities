@@ -12,5 +12,5 @@ public interface BlockType extends Named {
     boolean onBreak(TKWorld world, TKPlayer player, TKBlock block);
 
     @Nullable
-    BlockData createBlockData();
+    BlockData createBlockData(); //TODO should be removed and replaced
 }

@@ -4,11 +4,13 @@ import com.ewoudje.townskings.api.TKPlugin;
 import com.ewoudje.townskings.api.block.BlockData;
 import com.ewoudje.townskings.api.block.BlockType;
 import com.ewoudje.townskings.api.item.ItemType;
+import com.ewoudje.townskings.api.town.Town;
 import com.ewoudje.townskings.api.wrappers.TKBlock;
 import com.ewoudje.townskings.api.wrappers.TKItem;
 import com.ewoudje.townskings.api.wrappers.TKPlayer;
 import com.ewoudje.townskings.api.wrappers.TKWorld;
 import com.ewoudje.townskings.remote.RemoteBlock;
+import com.ewoudje.townskings.remote.RemotePlot;
 import com.ewoudje.townskings.remote.RemoteTown;
 import com.ewoudje.townskings.util.SendUtil;
 import de.tr7zw.nbtapi.NBTCompound;
@@ -16,14 +18,18 @@ import me.wiefferink.interactivemessenger.processing.Message;
 import org.bukkit.Material;
 
 import javax.annotation.Nonnull;
+import java.util.UUID;
 
 public class FoundingBlock implements ItemType, BlockType {
+
+    private final TKPlugin plugin;
 
     private float minDistance;
 
     public FoundingBlock(TKPlugin plugin) {
         double tmp = plugin.getConfig().getDouble("minimum-distance-towns");
         minDistance = (float) (tmp * tmp);
+        this.plugin = plugin;
     }
 
     @Override
@@ -57,7 +63,15 @@ public class FoundingBlock implements ItemType, BlockType {
 
         TKBlock fBlock = RemoteBlock.createBlock(item.getUID(), b, this.getClass());
 
-        RemoteTown.create(name, player, fBlock, world);
+        Town town = RemoteTown.create(name, player, fBlock, world);
+
+        plugin.getServer().getScheduler().runTask(plugin, () -> {
+            RemotePlot.createPlot(world, UUID.randomUUID().toString(), //TODO remove this
+                    b.getPosition().add(-50, 0, -50),
+                    b.getPosition().add(50, 0, 50),
+                    town.getPlotCategory("default"),
+                    false);
+        });
 
         return true;
     }

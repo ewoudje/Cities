@@ -1,7 +1,6 @@
 package com.ewoudje.townskings.api.world;
 
 import de.tr7zw.nbtapi.NBTCompound;
-import de.tr7zw.nbtapi.NBTListCompound;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 
@@ -68,5 +67,9 @@ public class BlockPosition {
                 ", y=" + y +
                 ", z=" + z +
                 '}';
+    }
+
+    public BlockPosition add(int x, int y, int z) {
+        return new BlockPosition(this.x + x, this.y + y, this.z + z);
     }
 }

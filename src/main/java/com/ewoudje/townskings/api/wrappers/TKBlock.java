@@ -3,6 +3,7 @@ package com.ewoudje.townskings.api.wrappers;
 import com.ewoudje.townskings.TK;
 import com.ewoudje.townskings.api.UObject;
 import com.ewoudje.townskings.api.block.BlockType;
+import com.ewoudje.townskings.api.world.BlockPosition;
 import com.ewoudje.townskings.base.BaseTKBlock;
 import com.ewoudje.townskings.remote.RemoteBlock;
 import org.bukkit.block.Block;
@@ -31,4 +32,8 @@ public interface TKBlock extends UObject {
     int getY();
 
     int getZ();
+
+    default BlockPosition getPosition() {
+        return new BlockPosition(getX(), getY(), getZ());
+    }
 }

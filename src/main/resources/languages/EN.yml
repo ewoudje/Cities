@@ -4,6 +4,7 @@ have-no-town: "[red]You are not in a town..."
 invalid-item: "[red]Select the right item for this command."
 invalid-player: "[red]This player doesn't exist"
 not-implemented: "[red]This is yet to be implemented!"
+invalid-item-key: "[red] Item %0% does not exist!"
 
 entered-town: "[green] Welcome to [gold][b]%1%[/b][reset]!"
 left-town: "[red] You left town [gold][b]%1%[/b][red]!"
@@ -23,6 +24,7 @@ town-exists: "[red]%0% already exists!"
 too-close-town: "[red]You are too close to another town!"
 founding-not-ready: "[red]This block is yet to be configured! Use /ct create <name>"
 owner-changed: "[green]Owner for %0% changed to %1%!"
+town-new-outpost: "[green]%0% has made a new outpost!!"
 
 broadcast-create-town:
   - "[yellow]%0%[reset] has created the town "
@@ -64,6 +66,7 @@ plotcategory-not-found: "[red]Category '%0%' is not found!"
 
 #Blocks
 founding-block: "[gold]Founding Lectern"
+outpost-block: "[gray]Outpost Lectern"
 
 #Icons
 icon-road: "[gold]Road mode"

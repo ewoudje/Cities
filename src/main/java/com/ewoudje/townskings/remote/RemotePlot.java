@@ -44,7 +44,7 @@ public class RemotePlot implements Plot, UReference {
 
     @Override
     public boolean isInfiniteDepth() {
-        return Boolean.parseBoolean(R.get(uuid, "depth"));
+        return !Boolean.parseBoolean(R.get(uuid, "depth"));
     }
 
     @Override

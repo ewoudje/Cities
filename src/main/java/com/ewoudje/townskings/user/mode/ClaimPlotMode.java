@@ -24,6 +24,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class ClaimPlotMode implements Mode {
     private final InventoryDesigner inventoryDesigner = new InventoryDesigner(Material.AIR);
@@ -96,7 +97,7 @@ public class ClaimPlotMode implements Mode {
                 break;
             case 8:
                 if (start == null || end == null) return; //TODO return correct message
-                RemotePlot.createPlot(player.getWorld(), "dummy", start, end, settings, depth); //TODO fix name
+                RemotePlot.createPlot(player.getWorld(), UUID.randomUUID().toString(), start, end, settings, depth); //TODO fix name
                 start = null;
                 end = null;
                 modeHandler.updateChunks(player);

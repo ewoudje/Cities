@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "JdJ",
+    "IGI",
+    "PPP"
+  ],
+  "key": {
+    "P": {
+      "item": "minecraft:chest_minecart"
+    },
+    "J": {
+      "item": "minecraft:stripped_jungle_log"
+    },
+    "I": {
+      "item": "minecraft:iron_block"
+    },
+    "G": {
+      "item": "minecraft:gold_block"
+    },
+    "d": {
+      "item": "minecraft:diamond"
+    }
+  },
+  "result": {
+    "item": "tk:outpost_block"
+  }
+}

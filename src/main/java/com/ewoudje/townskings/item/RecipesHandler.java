@@ -2,6 +2,7 @@ package com.ewoudje.townskings.item;
 
 import com.ewoudje.townskings.api.TKPlugin;
 import com.ewoudje.townskings.api.wrappers.TKItem;
+import com.ewoudje.townskings.util.StringUtil;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -21,7 +22,10 @@ import java.net.URISyntaxException;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 public class RecipesHandler {
 
@@ -109,11 +113,11 @@ public class RecipesHandler {
                 for (Map.Entry<String, JsonElement> el : json.get("key").getAsJsonObject().entrySet()) {
                     JsonObject obj = el.getValue().getAsJsonObject();
                     if (obj.has("tag")) {
-                        NamespacedKey key = getKey(obj.get("tag").getAsString());
+                        NamespacedKey key = StringUtil.getKey(obj.get("tag").getAsString());
                         ((ShapedRecipe) recipe).setIngredient(el.getKey().charAt(0),
                                 new RecipeChoice.MaterialChoice(Bukkit.getTag("items", key, Material.class)));
                     } else if (obj.has("item")) {
-                        NamespacedKey key = getKey(obj.get("item").getAsString());
+                        NamespacedKey key = StringUtil.getKey(obj.get("item").getAsString());
                         Material mat = Material.getMaterial(key.getKey().toUpperCase(Locale.ROOT));
                         if (mat == null) {
                             plugin.getLogger().severe("INVALID RECIPE: " + name + " " + key.toString() +  " material does not exist...");
@@ -135,12 +139,7 @@ public class RecipesHandler {
     private TKItem jsonItem(JsonObject object) {
         int amount = object.has("amount") ? object.get("amount").getAsInt() : 1;
 
-        return Items.createItem(null, getKey(object.get("item").getAsString()), amount);
-    }
-
-    private NamespacedKey getKey(String key) {
-        String[] id = key.split(":");
-        return new NamespacedKey(id[0], id[1]);
+        return Items.createItem(null, StringUtil.getKey(object.get("item").getAsString()), amount);
     }
 
 }

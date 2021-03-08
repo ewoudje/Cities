@@ -1,15 +1,11 @@
 package com.ewoudje.townskings.block;
 
 import com.ewoudje.townskings.api.TKPlugin;
-import com.ewoudje.townskings.api.wrappers.TKBlock;
 import com.ewoudje.townskings.api.block.BlockType;
-import com.ewoudje.townskings.api.wrappers.TKWorld;
-import org.bukkit.block.Block;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.function.Consumer;
 
 public class Blocks {
@@ -27,6 +23,7 @@ public class Blocks {
 
         //REGISTER
         r.accept(new FoundingBlock(plugin));
+        r.accept(new OutpostBlock(plugin));
         //END REGISTER
 
     }
