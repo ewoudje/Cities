@@ -15,8 +15,8 @@ public class FaktoryWrapper {
 
     public FaktoryWrapper(TKPlugin plugin) {
         client = new FaktoryClient(
-                "tcp://:" +
-                        plugin.getConfig().getString("faktory-pass") + "@" +
+                "tcp://" +
+                        //plugin.getConfig().getString("faktory-pass") + "@" + TODO faktory password
                         plugin.getConfig().getString("faktory-host", "localhost") + ":" + plugin.getConfig().getInt("faktory-port", 7419)
         ); //TODO config
         plugin.getServer().getScheduler()

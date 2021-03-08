@@ -65,13 +65,13 @@ public class FoundingBlock implements ItemType, BlockType {
 
         Town town = RemoteTown.create(name, player, fBlock, world);
 
-        plugin.getServer().getScheduler().runTask(plugin, () -> {
+        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
             RemotePlot.createPlot(world, UUID.randomUUID().toString(), //TODO remove this
                     b.getPosition().add(-50, 0, -50),
                     b.getPosition().add(50, 0, 50),
                     town.getPlotCategory("default"),
                     false);
-        });
+        }, 10);
 
         return true;
     }
